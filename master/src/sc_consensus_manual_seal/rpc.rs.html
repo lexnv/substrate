@@ -168,6 +168,8 @@
 <a href="#168" id="168">168</a>
 <a href="#169" id="169">169</a>
 <a href="#170" id="170">170</a>
+<a href="#171" id="171">171</a>
+<a href="#172" id="172">172</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -267,6 +269,8 @@
 	</span><span class="kw">pub </span>hash: Hash,
 	<span class="doccomment">/// some extra details about the import operation
 	</span><span class="kw">pub </span>aux: ImportedAux,
+	<span class="doccomment">/// uncompacted storage proof size (zero mean that there is no proof)
+	</span><span class="kw">pub </span>proof_size: usize,
 }
 
 <span class="kw">impl</span>&lt;Hash&gt; ManualSeal&lt;Hash&gt; {

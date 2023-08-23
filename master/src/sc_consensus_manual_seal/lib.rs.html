@@ -805,6 +805,10 @@
 <a href="#805" id="805">805</a>
 <a href="#806" id="806">806</a>
 <a href="#807" id="807">807</a>
+<a href="#808" id="808">808</a>
+<a href="#809" id="809">809</a>
+<a href="#810" id="810">810</a>
+<a href="#811" id="811">811</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -980,7 +984,7 @@
 	SC: SelectChain&lt;B&gt; + <span class="lifetime">&#39;static</span>,
 	TP: TransactionPool&lt;Block = B&gt;,
 	CIDP: CreateInherentDataProviders&lt;B, ()&gt;,
-	P: Send + Sync + <span class="lifetime">&#39;static</span>,
+	P: codec::Encode + Send + Sync + <span class="lifetime">&#39;static</span>,
 {
 	<span class="kw">while let </span><span class="prelude-val">Some</span>(command) = commands_stream.next().<span class="kw">await </span>{
 		<span class="kw">match </span>command {
@@ -1038,7 +1042,7 @@
 	SC: SelectChain&lt;B&gt; + <span class="lifetime">&#39;static</span>,
 	TP: TransactionPool&lt;Block = B&gt;,
 	CIDP: CreateInherentDataProviders&lt;B, ()&gt;,
-	P: Send + Sync + <span class="lifetime">&#39;static</span>,
+	P: codec::Encode + Send + Sync + <span class="lifetime">&#39;static</span>,
 {
 	<span class="comment">// instant-seal creates blocks as soon as transactions are imported
 	// into the transaction pool.
@@ -1088,7 +1092,7 @@
 	SC: SelectChain&lt;B&gt; + <span class="lifetime">&#39;static</span>,
 	TP: TransactionPool&lt;Block = B&gt;,
 	CIDP: CreateInherentDataProviders&lt;B, ()&gt;,
-	P: Send + Sync + <span class="lifetime">&#39;static</span>,
+	P: codec::Encode + Send + Sync + <span class="lifetime">&#39;static</span>,
 {
 	<span class="comment">// Creates and finalizes blocks as soon as transactions are imported
 	// into the transaction pool.
@@ -1266,8 +1270,9 @@
 					needs_justification: <span class="bool-val">false</span>,
 					bad_justification: <span class="bool-val">false</span>,
 					is_new_best: <span class="bool-val">true</span>,
-				}
-			}
+				},
+				proof_size: <span class="number">0
+			</span>}
 		);
 		<span class="comment">// assert that there&#39;s a new block in the db.
 		</span><span class="macro">assert!</span>(client.header(created_block.hash).unwrap().is_some());
@@ -1356,7 +1361,8 @@
 					needs_justification: <span class="bool-val">false</span>,
 					bad_justification: <span class="bool-val">false</span>,
 					is_new_best: <span class="bool-val">true</span>,
-				}
+				},
+				proof_size: created_block.proof_size
 			}
 		);
 		<span class="comment">// assert that there&#39;s a new block in the db.
@@ -1432,8 +1438,9 @@
 					needs_justification: <span class="bool-val">false</span>,
 					bad_justification: <span class="bool-val">false</span>,
 					is_new_best: <span class="bool-val">true</span>,
-				}
-			}
+				},
+				proof_size: <span class="number">0
+			</span>}
 		);
 		<span class="comment">// assert that there&#39;s a new block in the db.
 		</span><span class="kw">let </span>header = client.header(created_block.hash).unwrap().unwrap();
@@ -1518,8 +1525,9 @@
 					needs_justification: <span class="bool-val">false</span>,
 					bad_justification: <span class="bool-val">false</span>,
 					is_new_best: <span class="bool-val">true
-				</span>}
-			}
+				</span>},
+				proof_size: <span class="number">0
+			</span>}
 		);
 
 		<span class="macro">assert!</span>(pool.submit_one(<span class="kw-2">&amp;</span>BlockId::Number(<span class="number">1</span>), SOURCE, uxt(Alice, <span class="number">1</span>)).<span class="kw">await</span>.is_ok());
