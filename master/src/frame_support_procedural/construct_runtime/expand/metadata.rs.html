@@ -319,7 +319,7 @@
 
 			<span class="macro">quote! </span>{
 				#attr
-				#scrate::metadata_ir::PalletMetadataIR {
+				#scrate::__private::metadata_ir::PalletMetadataIR {
 					name: <span class="macro">stringify!</span>(#name),
 					index: #index,
 					storage: #storage,
@@ -335,7 +335,7 @@
 
 	<span class="macro">quote! </span>{
 		<span class="kw">impl </span>#runtime {
-			<span class="kw">fn </span>metadata_ir() -&gt; #scrate::metadata_ir::MetadataIR {
+			<span class="kw">fn </span>metadata_ir() -&gt; #scrate::__private::metadata_ir::MetadataIR {
 				<span class="comment">// Each runtime must expose the `runtime_metadata()` to fetch the runtime API metadata.
 				// The function is implemented by calling `impl_runtime_apis!`.
 				//
@@ -354,23 +354,23 @@
 				// `Deref` needs a reference for resolving the function call.
 				</span><span class="kw">let </span>rt = #runtime;
 
-				<span class="kw">let </span>ty = #scrate::scale_info::meta_type::&lt;#extrinsic&gt;();
-				<span class="kw">let </span>address_ty = #scrate::scale_info::meta_type::&lt;
+				<span class="kw">let </span>ty = #scrate::__private::scale_info::meta_type::&lt;#extrinsic&gt;();
+				<span class="kw">let </span>address_ty = #scrate::__private::scale_info::meta_type::&lt;
 						&lt;&lt;#extrinsic <span class="kw">as </span>#scrate::sp_runtime::traits::Extrinsic&gt;::SignaturePayload <span class="kw">as </span>#scrate::sp_runtime::traits::SignaturePayload&gt;::SignatureAddress
 					&gt;();
-				<span class="kw">let </span>call_ty = #scrate::scale_info::meta_type::&lt;
+				<span class="kw">let </span>call_ty = #scrate::__private::scale_info::meta_type::&lt;
 					&lt;#extrinsic <span class="kw">as </span>#scrate::sp_runtime::traits::Extrinsic&gt;::Call
 					&gt;();
-				<span class="kw">let </span>signature_ty = #scrate::scale_info::meta_type::&lt;
+				<span class="kw">let </span>signature_ty = #scrate::__private::scale_info::meta_type::&lt;
 						&lt;&lt;#extrinsic <span class="kw">as </span>#scrate::sp_runtime::traits::Extrinsic&gt;::SignaturePayload <span class="kw">as </span>#scrate::sp_runtime::traits::SignaturePayload&gt;::Signature
 					&gt;();
-				<span class="kw">let </span>extra_ty = #scrate::scale_info::meta_type::&lt;
+				<span class="kw">let </span>extra_ty = #scrate::__private::scale_info::meta_type::&lt;
 						&lt;&lt;#extrinsic <span class="kw">as </span>#scrate::sp_runtime::traits::Extrinsic&gt;::SignaturePayload <span class="kw">as </span>#scrate::sp_runtime::traits::SignaturePayload&gt;::SignatureExtra
 					&gt;();
 
-				#scrate::metadata_ir::MetadataIR {
-					pallets: #<span class="macro">scrate::sp_std::vec!</span>[ #(#pallets),* ],
-					extrinsic: #scrate::metadata_ir::ExtrinsicMetadataIR {
+				#scrate::__private::metadata_ir::MetadataIR {
+					pallets: #<span class="macro">scrate::__private::sp_std::vec!</span>[ #(#pallets),* ],
+					extrinsic: #scrate::__private::metadata_ir::ExtrinsicMetadataIR {
 						ty,
 						version: &lt;#extrinsic <span class="kw">as </span>#scrate::sp_runtime::traits::ExtrinsicMetadata&gt;::VERSION,
 						address_ty,
@@ -383,39 +383,39 @@
 								&gt;::SignedExtensions <span class="kw">as </span>#scrate::sp_runtime::traits::SignedExtension
 							&gt;::metadata()
 								.into_iter()
-								.map(|meta| #scrate::metadata_ir::SignedExtensionMetadataIR {
+								.map(|meta| #scrate::__private::metadata_ir::SignedExtensionMetadataIR {
 									identifier: meta.identifier,
 									ty: meta.ty,
 									additional_signed: meta.additional_signed,
 								})
 								.collect(),
 					},
-					ty: #scrate::scale_info::meta_type::&lt;#runtime&gt;(),
+					ty: #scrate::__private::scale_info::meta_type::&lt;#runtime&gt;(),
 					apis: (<span class="kw-2">&amp;</span>rt).runtime_metadata(),
-					outer_enums: #scrate::metadata_ir::OuterEnumsIR {
-						call_enum_ty: #scrate::scale_info::meta_type::&lt;
+					outer_enums: #scrate::__private::metadata_ir::OuterEnumsIR {
+						call_enum_ty: #scrate::__private::scale_info::meta_type::&lt;
 								&lt;#runtime <span class="kw">as </span>#system_path::Config&gt;::RuntimeCall
 							&gt;(),
-						event_enum_ty: #scrate::scale_info::meta_type::&lt;RuntimeEvent&gt;(),
-						error_enum_ty: #scrate::scale_info::meta_type::&lt;RuntimeError&gt;(),
+						event_enum_ty: #scrate::__private::scale_info::meta_type::&lt;RuntimeEvent&gt;(),
+						error_enum_ty: #scrate::__private::scale_info::meta_type::&lt;RuntimeError&gt;(),
 					}
 				}
 			}
 
-			<span class="kw">pub fn </span>metadata() -&gt; #scrate::metadata::RuntimeMetadataPrefixed {
+			<span class="kw">pub fn </span>metadata() -&gt; #scrate::__private::metadata::RuntimeMetadataPrefixed {
 				<span class="comment">// Note: this always returns the V14 version. The runtime API function
 				// must be deprecated.
-				</span>#scrate::metadata_ir::into_v14(#runtime::metadata_ir())
+				</span>#scrate::__private::metadata_ir::into_v14(#runtime::metadata_ir())
 			}
 
-			<span class="kw">pub fn </span>metadata_at_version(version: u32) -&gt; <span class="prelude-ty">Option</span>&lt;#scrate::OpaqueMetadata&gt; {
-				#scrate::metadata_ir::into_version(#runtime::metadata_ir(), version).map(|prefixed| {
-					#scrate::OpaqueMetadata::new(prefixed.into())
+			<span class="kw">pub fn </span>metadata_at_version(version: u32) -&gt; <span class="prelude-ty">Option</span>&lt;#scrate::__private::OpaqueMetadata&gt; {
+				#scrate::__private::metadata_ir::into_version(#runtime::metadata_ir(), version).map(|prefixed| {
+					#scrate::__private::OpaqueMetadata::new(prefixed.into())
 				})
 			}
 
-			<span class="kw">pub fn </span>metadata_versions() -&gt; #scrate::sp_std::vec::Vec&lt;u32&gt; {
-				#scrate::metadata_ir::supported_versions()
+			<span class="kw">pub fn </span>metadata_versions() -&gt; #scrate::__private::sp_std::vec::Vec&lt;u32&gt; {
+				#scrate::__private::metadata_ir::supported_versions()
 			}
 		}
 	}
@@ -478,8 +478,8 @@
 
 		<span class="macro">quote! </span>{
 			<span class="prelude-val">Some</span>(
-				#scrate::metadata_ir::PalletEventMetadataIR {
-					ty: #scrate::scale_info::meta_type::&lt;#pallet_event&gt;()
+				#scrate::__private::metadata_ir::PalletEventMetadataIR {
+					ty: #scrate::__private::scale_info::meta_type::&lt;#pallet_event&gt;()
 				}
 			)
 		}

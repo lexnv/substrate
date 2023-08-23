@@ -2195,10 +2195,6 @@
 <a href="#2195" id="2195">2195</a>
 <a href="#2196" id="2196">2196</a>
 <a href="#2197" id="2197">2197</a>
-<a href="#2198" id="2198">2198</a>
-<a href="#2199" id="2199">2199</a>
-<a href="#2200" id="2200">2200</a>
-<a href="#2201" id="2201">2201</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -2233,38 +2229,30 @@
 </span><span class="doccomment">/// Export ourself as `frame_support` to make tests happy.
 </span><span class="kw">extern crate </span><span class="self">self </span><span class="kw">as </span>frame_support;
 
-<span class="attr">#[doc(hidden)]
-</span><span class="kw">pub use </span>sp_tracing;
-
-<span class="attr">#[doc(hidden)]
-</span><span class="kw">pub use </span>codec;
-<span class="attr">#[doc(hidden)]
-</span><span class="kw">pub use </span>frame_metadata <span class="kw">as </span>metadata;
-<span class="attr">#[doc(hidden)]
-</span><span class="kw">pub use </span>log;
-<span class="attr">#[doc(hidden)]
-</span><span class="kw">pub use </span>paste;
-<span class="attr">#[doc(hidden)]
-</span><span class="kw">pub use </span>scale_info;
-<span class="kw">pub use </span>serde;
-<span class="kw">pub use </span>sp_api::metadata_ir;
-<span class="kw">pub use </span>sp_core::{OpaqueMetadata, Void};
-<span class="attr">#[doc(hidden)]
-</span><span class="kw">pub use </span>sp_core_hashing_proc_macro;
-<span class="attr">#[doc(hidden)]
-</span><span class="kw">pub use </span>sp_io::{<span class="self">self</span>, storage::root <span class="kw">as </span>storage_root};
-<span class="attr">#[cfg(feature = <span class="string">&quot;std&quot;</span>)]
-#[doc(hidden)]
-</span><span class="kw">pub use </span>sp_runtime::{bounded_btree_map, bounded_vec};
-<span class="attr">#[doc(hidden)]
-</span><span class="kw">pub use </span>sp_runtime::{RuntimeDebug, StateVersion};
-<span class="attr">#[cfg(feature = <span class="string">&quot;std&quot;</span>)]
-#[doc(hidden)]
-</span><span class="kw">pub use </span>sp_state_machine::BasicExternalities;
-<span class="attr">#[doc(hidden)]
-</span><span class="kw">pub use </span>sp_std;
-<span class="attr">#[doc(hidden)]
-</span><span class="kw">pub use </span>tt_call::<span class="kw-2">*</span>;
+<span class="doccomment">/// Private exports that are being used by macros.
+///
+/// The exports are not stable and should not be relied on.
+</span><span class="attr">#[doc(hidden)]
+</span><span class="kw">pub mod </span>__private {
+	<span class="kw">pub use </span>codec;
+	<span class="kw">pub use </span>frame_metadata <span class="kw">as </span>metadata;
+	<span class="kw">pub use </span>log;
+	<span class="kw">pub use </span>paste;
+	<span class="kw">pub use </span>scale_info;
+	<span class="kw">pub use </span>serde;
+	<span class="kw">pub use </span>sp_core::{OpaqueMetadata, Void};
+	<span class="kw">pub use </span>sp_core_hashing_proc_macro;
+	<span class="kw">pub use </span>sp_io::{<span class="self">self</span>, storage::root <span class="kw">as </span>storage_root};
+	<span class="kw">pub use </span>sp_metadata_ir <span class="kw">as </span>metadata_ir;
+	<span class="attr">#[cfg(feature = <span class="string">&quot;std&quot;</span>)]
+	</span><span class="kw">pub use </span>sp_runtime::{bounded_btree_map, bounded_vec};
+	<span class="kw">pub use </span>sp_runtime::{RuntimeDebug, StateVersion};
+	<span class="attr">#[cfg(feature = <span class="string">&quot;std&quot;</span>)]
+	</span><span class="kw">pub use </span>sp_state_machine::BasicExternalities;
+	<span class="kw">pub use </span>sp_std;
+	<span class="kw">pub use </span>sp_tracing;
+	<span class="kw">pub use </span>tt_call::<span class="kw-2">*</span>;
+}
 
 <span class="attr">#[macro_use]
 </span><span class="kw">pub mod </span>dispatch;
@@ -2456,7 +2444,7 @@
 	) =&gt; (
 		$( <span class="attr">#[ <span class="macro-nonterminal">$attr </span>] </span>)*
 		<span class="macro-nonterminal">$vis </span><span class="kw">struct </span><span class="macro-nonterminal">$name </span>$(
-			&lt; $(<span class="macro-nonterminal">$ty_params</span>),* &gt;( $(<span class="macro-nonterminal">$crate::sp_std::marker::PhantomData</span>&lt;<span class="macro-nonterminal">$ty_params</span>&gt;),* )
+			&lt; $(<span class="macro-nonterminal">$ty_params</span>),* &gt;( $(<span class="macro-nonterminal">$crate::__private::sp_std::marker::PhantomData</span>&lt;<span class="macro-nonterminal">$ty_params</span>&gt;),* )
 		)<span class="question-mark">?</span>;
 		<span class="macro-nonterminal">$</span><span class="macro">crate::parameter_types!</span>(<span class="macro-nonterminal">IMPL_CONST $name </span>, <span class="macro-nonterminal">$</span><span class="kw">type </span>, <span class="macro-nonterminal">$value </span>$( $(, <span class="macro-nonterminal">$ty_params</span>)* )<span class="question-mark">?</span>);
 		<span class="macro-nonterminal">$</span><span class="macro">crate::parameter_types!</span>( $( <span class="macro-nonterminal">$rest </span>)* );
@@ -2468,7 +2456,7 @@
 	) =&gt; (
 		$( <span class="attr">#[ <span class="macro-nonterminal">$attr </span>] </span>)*
 		<span class="macro-nonterminal">$vis </span><span class="kw">struct </span><span class="macro-nonterminal">$name </span>$(
-			&lt; $(<span class="macro-nonterminal">$ty_params</span>),* &gt;( $(<span class="macro-nonterminal">$crate::sp_std::marker::PhantomData</span>&lt;<span class="macro-nonterminal">$ty_params</span>&gt;),* )
+			&lt; $(<span class="macro-nonterminal">$ty_params</span>),* &gt;( $(<span class="macro-nonterminal">$crate::__private::sp_std::marker::PhantomData</span>&lt;<span class="macro-nonterminal">$ty_params</span>&gt;),* )
 		)<span class="question-mark">?</span>;
 		<span class="macro-nonterminal">$</span><span class="macro">crate::parameter_types!</span>(<span class="macro-nonterminal">IMPL $name</span>, <span class="macro-nonterminal">$</span><span class="kw">type</span>, <span class="macro-nonterminal">$value </span>$( $(, <span class="macro-nonterminal">$ty_params</span>)* )<span class="question-mark">?</span>);
 		<span class="macro-nonterminal">$</span><span class="macro">crate::parameter_types!</span>( $( <span class="macro-nonterminal">$rest </span>)* );
@@ -2480,7 +2468,7 @@
 	) =&gt; (
 		$( <span class="attr">#[ <span class="macro-nonterminal">$attr </span>] </span>)*
 		<span class="macro-nonterminal">$vis </span><span class="kw">struct </span><span class="macro-nonterminal">$name </span>$(
-			&lt; $(<span class="macro-nonterminal">$ty_params</span>),* &gt;( $(<span class="macro-nonterminal">$crate::sp_std::marker::PhantomData</span>&lt;<span class="macro-nonterminal">$ty_params</span>&gt;),* )
+			&lt; $(<span class="macro-nonterminal">$ty_params</span>),* &gt;( $(<span class="macro-nonterminal">$crate::__private::sp_std::marker::PhantomData</span>&lt;<span class="macro-nonterminal">$ty_params</span>&gt;),* )
 		)<span class="question-mark">?</span>;
 		<span class="macro-nonterminal">$</span><span class="macro">crate::parameter_types!</span>(<span class="macro-nonterminal">IMPL_STORAGE $name</span>, <span class="macro-nonterminal">$</span><span class="kw">type</span>, <span class="macro-nonterminal">$value </span>$( $(, <span class="macro-nonterminal">$ty_params</span>)* )<span class="question-mark">?</span>);
 		<span class="macro-nonterminal">$</span><span class="macro">crate::parameter_types!</span>( $( <span class="macro-nonterminal">$rest </span>)* );
@@ -2533,7 +2521,7 @@
 		</span><span class="kw">impl</span>&lt; $(<span class="macro-nonterminal">$ty_params</span>),* &gt; <span class="macro-nonterminal">$name</span>&lt; $(<span class="macro-nonterminal">$ty_params</span>),* &gt; {
 			<span class="doccomment">/// Returns the key for this parameter type.
 			</span><span class="kw">pub fn </span>key() -&gt; [u8; <span class="number">16</span>] {
-				<span class="macro-nonterminal">$</span><span class="macro">crate::sp_core_hashing_proc_macro::twox_128!</span>(<span class="string">b&quot;:&quot;</span>, <span class="macro-nonterminal">$name</span>, <span class="string">b&quot;:&quot;</span>)
+				<span class="macro-nonterminal">$</span><span class="macro">crate::__private::sp_core_hashing_proc_macro::twox_128!</span>(<span class="string">b&quot;:&quot;</span>, <span class="macro-nonterminal">$name</span>, <span class="string">b&quot;:&quot;</span>)
 			}
 
 			<span class="doccomment">/// Set the value of this parameter type in the storage.
@@ -2598,7 +2586,7 @@
 		<span class="macro-nonterminal">$</span><span class="macro">crate::parameter_types_impl_thread_local!</span>(
 			<span class="macro-nonterminal">IMPL_THREAD_LOCAL </span>$( <span class="macro-nonterminal">$vis</span>, <span class="macro-nonterminal">$name</span>, <span class="macro-nonterminal">$</span><span class="kw">type</span>, <span class="macro-nonterminal">$value</span>, )*
 		);
-		<span class="macro-nonterminal">$</span><span class="macro">crate::paste::item! </span>{
+		<span class="macro-nonterminal">$</span><span class="macro">crate::__private::paste::item! </span>{
 			<span class="macro-nonterminal">$</span><span class="macro">crate::parameter_types!</span>(
 				$(
 					$( <span class="attr">#[ <span class="macro-nonterminal">$attr </span>] </span>)*
@@ -2633,7 +2621,7 @@
 		}
 	};
 	(IMPL_THREAD_LOCAL $( <span class="macro-nonterminal">$vis</span>:vis, <span class="macro-nonterminal">$name</span>:ident, <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span>, <span class="macro-nonterminal">$value</span>:expr, )* ) =&gt; {
-		<span class="macro-nonterminal">$</span><span class="macro">crate::paste::item! </span>{
+		<span class="macro-nonterminal">$</span><span class="macro">crate::__private::paste::item! </span>{
 			<span class="macro">thread_local! </span>{
 				$(
 					<span class="kw">pub static </span>[&lt;<span class="macro-nonterminal">$name</span>:snake:upper&gt;]: std::cell::RefCell&lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>&gt; =
@@ -2663,7 +2651,7 @@
 	(IMPL <span class="macro-nonterminal">$name</span>:ident , <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty </span>, <span class="macro-nonterminal">$value</span>:expr) =&gt; {
 		<span class="kw">impl </span><span class="macro-nonterminal">$crate::traits::SortedMembers</span>&lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$name </span>{
 			<span class="kw">fn </span>contains(t: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="kw">type</span>) -&gt; <span class="macro-nonterminal">bool </span>{ <span class="kw-2">&amp;</span><span class="macro-nonterminal">$value </span>== t }
-			<span class="kw">fn </span>sorted_members() -&gt; <span class="macro-nonterminal">$crate::sp_std::prelude::Vec</span>&lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>&gt; { <span class="macro">vec!</span>[<span class="macro-nonterminal">$value</span>] }
+			<span class="kw">fn </span>sorted_members() -&gt; <span class="macro-nonterminal">$crate::__private::sp_std::prelude::Vec</span>&lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>&gt; { <span class="macro">vec!</span>[<span class="macro-nonterminal">$value</span>] }
 			<span class="kw">fn </span>count() -&gt; usize { <span class="number">1 </span>}
 			<span class="attr">#[cfg(feature = <span class="string">&quot;runtime-benchmarks&quot;</span>)]
 			</span><span class="kw">fn </span>add(<span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="kw">type</span>) {}
@@ -2686,9 +2674,9 @@
 	($(<span class="macro-nonterminal">$arg</span>:tt)+) =&gt; {
 		{
 			<span class="kw">use </span>core::fmt::Write;
-			<span class="kw">let </span><span class="kw-2">mut </span>w = <span class="macro-nonterminal">$crate::sp_std::Writer::default</span>();
+			<span class="kw">let </span><span class="kw-2">mut </span>w = <span class="macro-nonterminal">$crate::__private::sp_std::Writer::default</span>();
 			<span class="kw">let _ </span>= <span class="macro">core::write!</span>(<span class="kw-2">&amp;mut </span>w, $(<span class="macro-nonterminal">$arg</span>)+);
-			<span class="macro-nonterminal">$crate::sp_io::misc::print_utf8</span>(<span class="kw-2">&amp;</span>w.inner())
+			<span class="macro-nonterminal">$crate::__private::sp_io::misc::print_utf8</span>(<span class="kw-2">&amp;</span>w.inner())
 		}
 	}
 }
@@ -2885,9 +2873,13 @@
 		<span class="macro-nonterminal">$x</span>:expr,
 		<span class="macro-nonterminal">$y</span>:expr $(,)<span class="question-mark">?
 	</span>) =&gt; {
-		<span class="kw">let </span>h = <span class="macro-nonterminal">$crate::storage_root</span>(<span class="macro-nonterminal">$crate::StateVersion::V1</span>);
+		<span class="kw">let </span>h = <span class="macro-nonterminal">$crate::__private::storage_root</span>(<span class="macro-nonterminal">$crate::__private::StateVersion::V1</span>);
 		<span class="macro-nonterminal">$</span><span class="macro">crate::assert_err!</span>(<span class="macro-nonterminal">$x</span>, <span class="macro-nonterminal">$y</span>);
-		<span class="macro">assert_eq!</span>(h, <span class="macro-nonterminal">$crate::storage_root</span>(<span class="macro-nonterminal">$crate::StateVersion::V1</span>), <span class="string">&quot;storage has been mutated&quot;</span>);
+		<span class="macro">assert_eq!</span>(
+			h,
+			<span class="macro-nonterminal">$crate::__private::storage_root</span>(<span class="macro-nonterminal">$crate::__private::StateVersion::V1</span>),
+			<span class="string">&quot;storage has been mutated&quot;
+		</span>);
 	};
 }
 
@@ -2900,9 +2892,9 @@
 	(
 		<span class="macro-nonterminal">$x</span>:expr
 	) =&gt; {
-		<span class="kw">let </span>h = <span class="macro-nonterminal">$crate::storage_root</span>(<span class="macro-nonterminal">$crate::StateVersion::V1</span>);
+		<span class="kw">let </span>h = <span class="macro-nonterminal">$crate::__private::storage_root</span>(<span class="macro-nonterminal">$crate::__private::StateVersion::V1</span>);
 		<span class="macro-nonterminal">$x</span>;
-		<span class="macro">assert_eq!</span>(h, <span class="macro-nonterminal">$crate::storage_root</span>(<span class="macro-nonterminal">$crate::StateVersion::V1</span>));
+		<span class="macro">assert_eq!</span>(h, <span class="macro-nonterminal">$crate::__private::storage_root</span>(<span class="macro-nonterminal">$crate::__private::StateVersion::V1</span>));
 	};
 }
 
@@ -3002,10 +2994,10 @@
 </span><span class="kw">pub mod </span>testing_prelude {
 	<span class="kw">pub use super</span>::{
 		assert_err, assert_err_ignore_postinfo, assert_err_with_weight, assert_error_encoded_size,
-		assert_noop, assert_ok, assert_storage_noop, bounded_btree_map, bounded_vec,
-		parameter_types, traits::Get,
+		assert_noop, assert_ok, assert_storage_noop, parameter_types, traits::Get,
 	};
 	<span class="kw">pub use </span>sp_arithmetic::assert_eq_error_rate;
+	<span class="kw">pub use </span>sp_runtime::{bounded_btree_map, bounded_vec};
 }
 
 <span class="doccomment">/// Prelude to be used alongside pallet macro, for ease of use.
@@ -3031,7 +3023,7 @@
 			IsType, PalletInfoAccess, StorageInfoTrait, StorageVersion, TypedGet,
 		},
 		Blake2_128, Blake2_128Concat, Blake2_256, CloneNoBound, DebugNoBound, EqNoBound, Identity,
-		PartialEqNoBound, RuntimeDebug, RuntimeDebugNoBound, Twox128, Twox256, Twox64Concat,
+		PartialEqNoBound, RuntimeDebugNoBound, Twox128, Twox256, Twox64Concat,
 	};
 	<span class="kw">pub use </span>codec::{Decode, Encode, MaxEncodedLen};
 	<span class="kw">pub use </span>frame_support::pallet_macros::<span class="kw-2">*</span>;
@@ -3045,7 +3037,7 @@
 			TransactionTag, TransactionValidity, TransactionValidityError, UnknownTransaction,
 			ValidTransaction,
 		},
-		MAX_MODULE_ERROR_ENCODED_SIZE,
+		RuntimeDebug, MAX_MODULE_ERROR_ENCODED_SIZE,
 	};
 	<span class="kw">pub use </span>sp_std::marker::PhantomData;
 	<span class="kw">pub use </span>sp_weights::Weight;

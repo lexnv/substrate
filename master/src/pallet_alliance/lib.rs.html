@@ -1220,6 +1220,7 @@
 <span class="kw">mod </span>types;
 <span class="kw">pub mod </span>weights;
 
+<span class="kw">use </span>codec::{Decode, Encode, MaxEncodedLen};
 <span class="kw">use </span>frame_support::pallet_prelude::<span class="kw-2">*</span>;
 <span class="kw">use </span>frame_system::pallet_prelude::<span class="kw-2">*</span>;
 <span class="kw">use </span>sp_runtime::{
@@ -1229,13 +1230,11 @@
 <span class="kw">use </span>sp_std::{convert::TryInto, prelude::<span class="kw-2">*</span>};
 
 <span class="kw">use </span>frame_support::{
-	codec::{Decode, Encode, MaxEncodedLen},
 	dispatch::{
 		DispatchError, DispatchResult, DispatchResultWithPostInfo, Dispatchable, GetDispatchInfo,
 		PostDispatchInfo,
 	},
 	ensure,
-	scale_info::TypeInfo,
 	traits::{
 		ChangeMembers, Currency, Get, InitializeMembers, IsSubType, OnUnbalanced,
 		ReservableCurrency,
@@ -1243,6 +1242,7 @@
 	weights::Weight,
 };
 <span class="kw">use </span>pallet_identity::IdentityField;
+<span class="kw">use </span>scale_info::TypeInfo;
 
 <span class="kw">pub use </span>pallet::<span class="kw-2">*</span>;
 <span class="kw">pub use </span>types::<span class="kw-2">*</span>;

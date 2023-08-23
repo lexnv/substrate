@@ -1302,7 +1302,6 @@
 //! traits and their methods directly.
 
 </span><span class="kw">use crate</span>::{
-	metadata_ir::{StorageEntryMetadataIR, StorageEntryTypeIR},
 	storage::{
 		types::{
 			EncodeLikeTuple, HasKeyPrefix, HasReversibleKeyPrefix, OptionQuery, QueryKindTrait,
@@ -1313,6 +1312,7 @@
 	traits::{Get, GetDefault, StorageInfo, StorageInstance},
 };
 <span class="kw">use </span>codec::{Decode, Encode, EncodeLike, FullCodec, MaxEncodedLen};
+<span class="kw">use </span>sp_metadata_ir::{StorageEntryMetadataIR, StorageEntryTypeIR};
 <span class="kw">use </span>sp_runtime::SaturatedConversion;
 <span class="kw">use </span>sp_std::prelude::<span class="kw-2">*</span>;
 
@@ -1903,10 +1903,10 @@
 	<span class="kw">use super</span>::<span class="kw-2">*</span>;
 	<span class="kw">use crate</span>::{
 		hash::{StorageHasher <span class="kw">as _</span>, <span class="kw-2">*</span>},
-		metadata_ir::{StorageEntryModifierIR, StorageHasherIR},
 		storage::types::{Key <span class="kw">as </span>NMapKey, ValueQuery},
 	};
 	<span class="kw">use </span>sp_io::{hashing::twox_128, TestExternalities};
+	<span class="kw">use </span>sp_metadata_ir::{StorageEntryModifierIR, StorageHasherIR};
 
 	<span class="kw">struct </span>Prefix;
 	<span class="kw">impl </span>StorageInstance <span class="kw">for </span>Prefix {

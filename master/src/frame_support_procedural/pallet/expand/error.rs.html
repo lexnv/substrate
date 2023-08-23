@@ -228,7 +228,7 @@
 					<span class="macro-nonterminal">$caller</span>:tt
 					frame_support = [{ $(<span class="macro-nonterminal">$frame_support</span>:ident)::* }]
 				} =&gt; {
-					$(<span class="macro-nonterminal">$frame_support</span>::)<span class="kw-2">*</span><span class="macro">tt_return! </span>{
+					$(<span class="macro-nonterminal">$frame_support</span>::)<span class="kw-2">*</span><span class="macro">__private::tt_return! </span>{
 						<span class="macro-nonterminal">$caller
 					</span>}
 				};
@@ -246,7 +246,7 @@
 		<span class="attr">#[doc(hidden)]
 		#[codec(skip)]
 		</span>__Ignore(
-			#frame_support::sp_std::marker::PhantomData&lt;(#type_use_gen)&gt;,
+			#frame_support::__private::sp_std::marker::PhantomData&lt;(#type_use_gen)&gt;,
 			#frame_support::Never,
 		)
 	);
@@ -282,9 +282,9 @@
 	<span class="comment">// derive TypeInfo for error metadata
 	</span>error_item.attrs.push(<span class="macro">syn::parse_quote! </span>{
 		<span class="attr">#[derive(
-			#frame_support::codec::Encode,
-			#frame_support::codec::Decode,
-			#frame_support::scale_info::TypeInfo,
+			#frame_support::__private::codec::Encode,
+			#frame_support::__private::codec::Decode,
+			#frame_support::__private::scale_info::TypeInfo,
 			#frame_support::PalletError,
 		)]
 	</span>});
@@ -299,11 +299,11 @@
 	}
 
 	<span class="macro">quote::quote_spanned!</span>(error.attr_span =&gt;
-		<span class="kw">impl</span>&lt;#type_impl_gen&gt; #frame_support::sp_std::fmt::Debug <span class="kw">for </span>#error_ident&lt;#type_use_gen&gt;
+		<span class="kw">impl</span>&lt;#type_impl_gen&gt; #frame_support::__private::sp_std::fmt::Debug <span class="kw">for </span>#error_ident&lt;#type_use_gen&gt;
 			#config_where_clause
 		{
-			<span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>#frame_support::sp_std::fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;)
-				-&gt; #frame_support::sp_std::fmt::Result
+			<span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>#frame_support::__private::sp_std::fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;)
+				-&gt; #frame_support::__private::sp_std::fmt::Result
 			{
 				f.write_str(<span class="self">self</span>.as_str())
 			}
@@ -332,7 +332,7 @@
 			#config_where_clause
 		{
 			<span class="kw">fn </span>from(err: #error_ident&lt;#type_use_gen&gt;) -&gt; <span class="self">Self </span>{
-				<span class="kw">use </span>#frame_support::codec::Encode;
+				<span class="kw">use </span>#frame_support::__private::codec::Encode;
 				<span class="kw">let </span>index = &lt;
 					&lt;T <span class="kw">as </span>#frame_system::Config&gt;::PalletInfo
 					<span class="kw">as </span>#frame_support::traits::PalletInfo
@@ -356,7 +356,7 @@
 				<span class="macro-nonterminal">$caller</span>:tt
 				frame_support = [{ $(<span class="macro-nonterminal">$frame_support</span>:ident)::* }]
 			} =&gt; {
-				$(<span class="macro-nonterminal">$frame_support</span>::)<span class="kw-2">*</span><span class="macro">tt_return! </span>{
+				$(<span class="macro-nonterminal">$frame_support</span>::)<span class="kw-2">*</span><span class="macro">__private::tt_return! </span>{
 					<span class="macro-nonterminal">$caller
 					</span>error = [{ #error_ident }]
 				}

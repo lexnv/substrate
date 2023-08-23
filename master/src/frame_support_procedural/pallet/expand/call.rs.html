@@ -702,9 +702,9 @@
 			#frame_support::CloneNoBound,
 			#frame_support::EqNoBound,
 			#frame_support::PartialEqNoBound,
-			#frame_support::codec::Encode,
-			#frame_support::codec::Decode,
-			#frame_support::scale_info::TypeInfo,
+			#frame_support::__private::codec::Encode,
+			#frame_support::__private::codec::Decode,
+			#frame_support::__private::scale_info::TypeInfo,
 		)]
 		#[codec(encode_bound())]
 		#[codec(decode_bound())]
@@ -714,7 +714,7 @@
 			<span class="attr">#[doc(hidden)]
 			#[codec(skip)]
 			</span>__Ignore(
-				#frame_support::sp_std::marker::PhantomData&lt;(#type_use_gen,)&gt;,
+				#frame_support::__private::sp_std::marker::PhantomData&lt;(#type_use_gen,)&gt;,
 				#frame_support::Never,
 			),
 			#(
@@ -821,8 +821,8 @@
 					<span class="kw">match </span><span class="self">self </span>{
 						#(
 							<span class="self">Self</span>::#fn_name { #( #args_name_pattern, )* } =&gt; {
-								#<span class="macro">frame_support::sp_tracing::enter_span!</span>(
-									#<span class="macro">frame_support::sp_tracing::trace_span!</span>(<span class="macro">stringify!</span>(#fn_name))
+								#<span class="macro">frame_support::__private::sp_tracing::enter_span!</span>(
+									#<span class="macro">frame_support::__private::sp_tracing::trace_span!</span>(<span class="macro">stringify!</span>(#fn_name))
 								);
 								#maybe_allow_attrs
 								&lt;#pallet_ident&lt;#type_use_gen&gt;&gt;::#fn_name(origin, #( #args_name, )* )
@@ -846,8 +846,8 @@
 
 		<span class="kw">impl</span>&lt;#type_impl_gen&gt; #pallet_ident&lt;#type_use_gen&gt; #where_clause {
 			<span class="attr">#[doc(hidden)]
-			</span><span class="kw">pub fn </span>call_functions() -&gt; #frame_support::metadata_ir::PalletCallMetadataIR {
-				#frame_support::scale_info::meta_type::&lt;#call_ident&lt;#type_use_gen&gt;&gt;().into()
+			</span><span class="kw">pub fn </span>call_functions() -&gt; #frame_support::__private::metadata_ir::PalletCallMetadataIR {
+				#frame_support::__private::scale_info::meta_type::&lt;#call_ident&lt;#type_use_gen&gt;&gt;().into()
 			}
 		}
 	)

@@ -796,7 +796,6 @@
 //! methods directly.
 
 </span><span class="kw">use crate</span>::{
-	metadata_ir::{StorageEntryMetadataIR, StorageEntryTypeIR},
 	storage::{
 		types::{OptionQuery, QueryKindTrait, StorageEntryMetadataBuilder},
 		KeyLenOf, StorageAppend, StorageDecodeLength, StoragePrefixedMap, StorageTryAppend,
@@ -806,6 +805,7 @@
 };
 <span class="kw">use </span>codec::{Decode, Encode, EncodeLike, FullCodec, MaxEncodedLen};
 <span class="kw">use </span>sp_arithmetic::traits::SaturatedConversion;
+<span class="kw">use </span>sp_metadata_ir::{StorageEntryMetadataIR, StorageEntryTypeIR};
 <span class="kw">use </span>sp_std::prelude::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// A type that allow to store value for given key. Allowing to insert/remove/iterate on values.
@@ -1288,10 +1288,10 @@
 	<span class="kw">use super</span>::<span class="kw-2">*</span>;
 	<span class="kw">use crate</span>::{
 		hash::<span class="kw-2">*</span>,
-		metadata_ir::{StorageEntryModifierIR, StorageEntryTypeIR, StorageHasherIR},
 		storage::{types::ValueQuery, IterableStorageMap},
 	};
 	<span class="kw">use </span>sp_io::{hashing::twox_128, TestExternalities};
+	<span class="kw">use </span>sp_metadata_ir::{StorageEntryModifierIR, StorageEntryTypeIR, StorageHasherIR};
 
 	<span class="kw">struct </span>Prefix;
 	<span class="kw">impl </span>StorageInstance <span class="kw">for </span>Prefix {

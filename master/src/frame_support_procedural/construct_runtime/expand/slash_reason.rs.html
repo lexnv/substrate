@@ -106,9 +106,9 @@
 		<span class="doccomment">/// A reason for slashing funds.
 		</span><span class="attr">#[derive(
 			Copy, Clone, Eq, PartialEq, Ord, PartialOrd,
-			#scrate::codec::Encode, #scrate::codec::Decode, #scrate::codec::MaxEncodedLen,
-			#scrate::scale_info::TypeInfo,
-			#scrate::RuntimeDebug,
+			#scrate::__private::codec::Encode, #scrate::__private::codec::Decode, #scrate::__private::codec::MaxEncodedLen,
+			#scrate::__private::scale_info::TypeInfo,
+			#scrate::__private::RuntimeDebug,
 		)]
 		</span><span class="kw">pub enum </span>RuntimeSlashReason {
 			#( #slash_reason_variants )*

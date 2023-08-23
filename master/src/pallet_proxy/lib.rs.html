@@ -808,7 +808,6 @@
 <a href="#808" id="808">808</a>
 <a href="#809" id="809">809</a>
 <a href="#810" id="810">810</a>
-<a href="#811" id="811">811</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -849,7 +848,6 @@
 	dispatch::{DispatchError, GetDispatchInfo},
 	ensure,
 	traits::{Currency, Get, InstanceFilter, IsSubType, IsType, OriginTrait, ReservableCurrency},
-	RuntimeDebug,
 };
 <span class="kw">use </span>frame_system::{<span class="self">self </span><span class="kw">as </span>system, ensure_signed, pallet_prelude::BlockNumberFor};
 <span class="kw">pub use </span>pallet::<span class="kw-2">*</span>;
@@ -857,7 +855,7 @@
 <span class="kw">use </span>sp_io::hashing::blake2_256;
 <span class="kw">use </span>sp_runtime::{
 	traits::{Dispatchable, Hash, Saturating, StaticLookup, TrailingZeroInput, Zero},
-	DispatchResult,
+	DispatchResult, RuntimeDebug,
 };
 <span class="kw">use </span>sp_std::prelude::<span class="kw-2">*</span>;
 <span class="kw">pub use </span>weights::WeightInfo;

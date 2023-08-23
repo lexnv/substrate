@@ -2647,6 +2647,7 @@
 <a href="#2647" id="2647">2647</a>
 <a href="#2648" id="2648">2648</a>
 <a href="#2649" id="2649">2649</a>
+<a href="#2650" id="2650">2650</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -2696,7 +2697,7 @@
 		},
 		ConstantMultiplier, IdentityFee, Weight,
 	},
-	BoundedVec, PalletId, RuntimeDebug,
+	BoundedVec, PalletId,
 };
 <span class="kw">use </span>frame_system::{
 	limits::{BlockLength, BlockWeights},
@@ -2727,6 +2728,7 @@
 	},
 	transaction_validity::{TransactionPriority, TransactionSource, TransactionValidity},
 	ApplyExtrinsicResult, FixedPointNumber, FixedU128, Perbill, Percent, Permill, Perquintill,
+	RuntimeDebug,
 };
 <span class="kw">use </span>sp_std::prelude::<span class="kw-2">*</span>;
 <span class="attr">#[cfg(any(feature = <span class="string">&quot;std&quot;</span>, test))]

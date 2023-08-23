@@ -1236,7 +1236,7 @@
 			#(#cfg_attrs)*
 			{
 				&lt;#full_ident <span class="kw">as </span>#frame_support::storage::StorageEntryMetadataBuilder&gt;::build_metadata(
-					#<span class="macro">frame_support::sp_std::vec!</span>[
+					#<span class="macro">frame_support::__private::sp_std::vec!</span>[
 						#( #docs, )*
 					],
 					<span class="kw-2">&amp;mut </span>entries,
@@ -1307,7 +1307,7 @@
 						<span class="kw">impl</span>&lt;#type_impl_gen&gt; #pallet_ident&lt;#type_use_gen&gt; #completed_where_clause {
 							<span class="attr">#[doc = #getter_doc_line]
 							</span><span class="kw">pub fn </span>#getter&lt;KArg&gt;(k: KArg) -&gt; #query <span class="kw">where
-								</span>KArg: #frame_support::codec::EncodeLike&lt;#key&gt;,
+								</span>KArg: #frame_support::__private::codec::EncodeLike&lt;#key&gt;,
 							{
 								&lt;
 									#full_ident <span class="kw">as </span>#frame_support::storage::StorageMap&lt;#key, #value&gt;
@@ -1333,7 +1333,7 @@
 						<span class="kw">impl</span>&lt;#type_impl_gen&gt; #pallet_ident&lt;#type_use_gen&gt; #completed_where_clause {
 							<span class="attr">#[doc = #getter_doc_line]
 							</span><span class="kw">pub fn </span>#getter&lt;KArg&gt;(k: KArg) -&gt; #query <span class="kw">where
-								</span>KArg: #frame_support::codec::EncodeLike&lt;#key&gt;,
+								</span>KArg: #frame_support::__private::codec::EncodeLike&lt;#key&gt;,
 							{
 								<span class="comment">// NOTE: we can&#39;t use any trait here because CountedStorageMap
 								// doesn&#39;t implement any.
@@ -1359,8 +1359,8 @@
 						<span class="kw">impl</span>&lt;#type_impl_gen&gt; #pallet_ident&lt;#type_use_gen&gt; #completed_where_clause {
 							<span class="attr">#[doc = #getter_doc_line]
 							</span><span class="kw">pub fn </span>#getter&lt;KArg1, KArg2&gt;(k1: KArg1, k2: KArg2) -&gt; #query <span class="kw">where
-								</span>KArg1: #frame_support::codec::EncodeLike&lt;#key1&gt;,
-								KArg2: #frame_support::codec::EncodeLike&lt;#key2&gt;,
+								</span>KArg1: #frame_support::__private::codec::EncodeLike&lt;#key1&gt;,
+								KArg2: #frame_support::__private::codec::EncodeLike&lt;#key2&gt;,
 							{
 								&lt;
 									#full_ident <span class="kw">as
@@ -1606,8 +1606,8 @@
 			#completed_where_clause
 		{
 			<span class="attr">#[doc(hidden)]
-			</span><span class="kw">pub fn </span>storage_metadata() -&gt; #frame_support::metadata_ir::PalletStorageMetadataIR {
-				#frame_support::metadata_ir::PalletStorageMetadataIR {
+			</span><span class="kw">pub fn </span>storage_metadata() -&gt; #frame_support::__private::metadata_ir::PalletStorageMetadataIR {
+				#frame_support::__private::metadata_ir::PalletStorageMetadataIR {
 					prefix: &lt;
 						&lt;T <span class="kw">as </span>#frame_system::Config&gt;::PalletInfo <span class="kw">as
 						</span>#frame_support::traits::PalletInfo
@@ -1615,7 +1615,7 @@
 						.expect(<span class="string">&quot;No name found for the pallet in the runtime! This usually means that the pallet wasn&#39;t added to `construct_runtime!`.&quot;</span>),
 					entries: {
 						<span class="attr">#[allow(unused_mut)]
-						</span><span class="kw">let </span><span class="kw-2">mut </span>entries = #<span class="macro">frame_support::sp_std::vec!</span>[];
+						</span><span class="kw">let </span><span class="kw-2">mut </span>entries = #<span class="macro">frame_support::__private::sp_std::vec!</span>[];
 						#( #entries_builder )*
 						entries
 					},

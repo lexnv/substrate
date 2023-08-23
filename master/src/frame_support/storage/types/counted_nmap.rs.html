@@ -1456,7 +1456,7 @@
 	Never,
 };
 <span class="kw">use </span>codec::{Decode, Encode, EncodeLike, FullCodec, MaxEncodedLen, Ref};
-<span class="kw">use </span>sp_api::metadata_ir::StorageEntryMetadataIR;
+<span class="kw">use </span>sp_metadata_ir::StorageEntryMetadataIR;
 <span class="kw">use </span>sp_runtime::traits::Saturating;
 <span class="kw">use </span>sp_std::prelude::<span class="kw-2">*</span>;
 
@@ -2065,8 +2065,8 @@
 		hash::{StorageHasher <span class="kw">as _</span>, <span class="kw-2">*</span>},
 		storage::types::{Key <span class="kw">as </span>NMapKey, ValueQuery},
 	};
-	<span class="kw">use </span>sp_api::metadata_ir::{StorageEntryModifierIR, StorageEntryTypeIR, StorageHasherIR};
 	<span class="kw">use </span>sp_io::{hashing::twox_128, TestExternalities};
+	<span class="kw">use </span>sp_metadata_ir::{StorageEntryModifierIR, StorageEntryTypeIR, StorageHasherIR};
 
 	<span class="kw">struct </span>Prefix;
 	<span class="kw">impl </span>StorageInstance <span class="kw">for </span>Prefix {

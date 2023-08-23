@@ -99,6 +99,7 @@
 <a href="#99" id="99">99</a>
 <a href="#100" id="100">100</a>
 <a href="#101" id="101">101</a>
+<a href="#102" id="102">102</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -126,6 +127,7 @@
 <span class="kw">use </span>frame_support::assert_ok;
 <span class="kw">use </span>frame_system::RawOrigin;
 <span class="kw">use </span>sp_core::crypto::FromEntropy;
+<span class="kw">use </span>sp_std::vec;
 
 <span class="doccomment">/// Trait describing the factory function for the `AssetKind` parameter.
 </span><span class="kw">pub trait </span>AssetKindFactory&lt;AssetKind&gt; {

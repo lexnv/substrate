@@ -598,6 +598,7 @@
 <a href="#598" id="598">598</a>
 <a href="#599" id="599">599</a>
 <a href="#600" id="600">600</a>
+<a href="#601" id="601">601</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) 2017-2022 Parity Technologies (UK) Ltd.
@@ -661,6 +662,7 @@
 </span><span class="kw">use </span>codec::{Decode, Encode, MaxEncodedLen};
 <span class="kw">use </span>scale_info::TypeInfo;
 <span class="kw">use </span>sp_arithmetic::traits::{Saturating, Zero};
+<span class="kw">use </span>sp_runtime::RuntimeDebug;
 <span class="kw">use </span>sp_std::{marker::PhantomData, prelude::<span class="kw-2">*</span>};
 
 <span class="kw">use </span>frame_support::{
@@ -669,7 +671,7 @@
 	traits::{
 		tokens::Balance <span class="kw">as </span>BalanceTrait, EnsureOrigin, EnsureOriginWithArg, Get, RankedMembers,
 	},
-	BoundedVec, RuntimeDebug,
+	BoundedVec,
 };
 
 <span class="attr">#[cfg(test)]

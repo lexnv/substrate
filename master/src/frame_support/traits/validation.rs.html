@@ -470,8 +470,8 @@
 <span class="kw">impl</span>&lt;Key&gt; KeyOwnerProofSystem&lt;Key&gt; <span class="kw">for </span>() {
 	<span class="comment">// The proof and identification tuples is any bottom type to guarantee that the methods of this
 	// implementation can never be called or return anything other than `None`.
-	</span><span class="kw">type </span>Proof = <span class="kw">crate</span>::Void;
-	<span class="kw">type </span>IdentificationTuple = <span class="kw">crate</span>::Void;
+	</span><span class="kw">type </span>Proof = sp_core::Void;
+	<span class="kw">type </span>IdentificationTuple = sp_core::Void;
 
 	<span class="kw">fn </span>prove(_key: Key) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Proof&gt; {
 		<span class="prelude-val">None

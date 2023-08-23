@@ -165,7 +165,6 @@
 <a href="#165" id="165">165</a>
 <a href="#166" id="166">166</a>
 <a href="#167" id="167">167</a>
-<a href="#168" id="168">168</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -185,11 +184,10 @@
 
 </span><span class="doccomment">//! Traits for encoding data related to pallet&#39;s storage items.
 
-</span><span class="kw">use </span><span class="kw">crate</span>::sp_std::collections::btree_set::BTreeSet;
-<span class="kw">use </span>impl_trait_for_tuples::impl_for_tuples;
+</span><span class="kw">use </span>impl_trait_for_tuples::impl_for_tuples;
 <span class="kw">pub use </span>sp_core::storage::TrackedStorageKey;
-<span class="kw">use </span>sp_runtime::traits::Saturating;
-<span class="kw">use </span>sp_std::prelude::<span class="kw-2">*</span>;
+<span class="kw">use </span>sp_runtime::{traits::Saturating, RuntimeDebug};
+<span class="kw">use </span>sp_std::{collections::btree_set::BTreeSet, prelude::<span class="kw-2">*</span>};
 
 <span class="doccomment">/// An instance of a pallet in the storage.
 ///
@@ -229,7 +227,7 @@
 
 <span class="doccomment">/// Metadata about storage from the runtime.
 </span><span class="attr">#[derive(
-	codec::Encode, codec::Decode, <span class="kw">crate</span>::RuntimeDebug, Eq, PartialEq, Clone, scale_info::TypeInfo,
+	codec::Encode, codec::Decode, RuntimeDebug, Eq, PartialEq, Clone, scale_info::TypeInfo,
 )]
 </span><span class="kw">pub struct </span>StorageInfo {
 	<span class="doccomment">/// Encoded string of pallet name.

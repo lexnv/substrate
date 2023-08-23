@@ -924,11 +924,11 @@
 //! ```
 //! This call has some implicit pallet parts, thus it will expand to:
 //! ```ignore
-//! frame_support::tt_call! {
+//! frame_support::__private::tt_call! {
 //! 	macro = [{ pallet_balances::tt_default_parts }]
 //! 	~~&gt; frame_support::match_and_insert! {
 //! 		target = [{
-//! 			frame_support::tt_call! {
+//! 			frame_support::__private::tt_call! {
 //! 				macro = [{ frame_system::tt_default_parts }]
 //! 				~~&gt; frame_support::match_and_insert! {
 //! 					target = [{
@@ -1110,7 +1110,7 @@
 		<span class="kw">let </span>pallet_name = <span class="kw-2">&amp;</span>pallet.name;
 		<span class="kw">let </span>pallet_instance = pallet.instance.as_ref().map(|instance| <span class="macro">quote::quote!</span>(::&lt;#instance&gt;));
 		expansion = <span class="macro">quote::quote!</span>(
-			#<span class="macro">frame_support::tt_call! </span>{
+			#<span class="macro">frame_support::__private::tt_call! </span>{
 				<span class="kw">macro </span>= [{ #pallet_path::tt_default_parts }]
 				frame_support = [{ #frame_support }]
 				~~&gt; #<span class="macro">frame_support::match_and_insert! </span>{
@@ -1146,7 +1146,7 @@
 		<span class="kw">let </span>pallet_name = <span class="kw-2">&amp;</span>pallet.name;
 		<span class="kw">let </span>pallet_instance = pallet.instance.as_ref().map(|instance| <span class="macro">quote::quote!</span>(::&lt;#instance&gt;));
 		expansion = <span class="macro">quote::quote!</span>(
-			#<span class="macro">frame_support::tt_call! </span>{
+			#<span class="macro">frame_support::__private::tt_call! </span>{
 				<span class="kw">macro </span>= [{ #pallet_path::tt_extra_parts }]
 				frame_support = [{ #frame_support }]
 				~~&gt; #<span class="macro">frame_support::match_and_insert! </span>{
@@ -1258,7 +1258,7 @@
 
 		<span class="attr">#[derive(
 			Clone, Copy, PartialEq, Eq, #scrate::sp_runtime::RuntimeDebug,
-			#scrate::scale_info::TypeInfo
+			#scrate::__private::scale_info::TypeInfo
 		)]
 		</span><span class="kw">pub struct </span>#name;
 		<span class="kw">impl </span>#scrate::sp_runtime::traits::GetRuntimeBlockType <span class="kw">for </span>#name {
@@ -1283,7 +1283,7 @@
 		</span><span class="attr">#[doc(hidden)]
 		</span><span class="kw">trait </span>InternalConstructRuntime {
 			<span class="attr">#[inline(always)]
-			</span><span class="kw">fn </span>runtime_metadata(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; #scrate::sp_std::vec::Vec&lt;#scrate::metadata_ir::RuntimeApiMetadataIR&gt; {
+			</span><span class="kw">fn </span>runtime_metadata(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; #scrate::__private::sp_std::vec::Vec&lt;#scrate::__private::metadata_ir::RuntimeApiMetadataIR&gt; {
 				Default::default()
 			}
 		}
@@ -1530,10 +1530,10 @@
 
 		<span class="kw">impl </span>#scrate::traits::PalletInfo <span class="kw">for </span>PalletInfo {
 			<span class="kw">fn </span>index&lt;P: <span class="lifetime">&#39;static</span>&gt;() -&gt; <span class="prelude-ty">Option</span>&lt;usize&gt; {
-				<span class="kw">let </span>type_id = #scrate::sp_std::any::TypeId::of::&lt;P&gt;();
+				<span class="kw">let </span>type_id = #scrate::__private::sp_std::any::TypeId::of::&lt;P&gt;();
 				#(
 					#pallet_attrs
-					<span class="kw">if </span>type_id == #scrate::sp_std::any::TypeId::of::&lt;#names&gt;() {
+					<span class="kw">if </span>type_id == #scrate::__private::sp_std::any::TypeId::of::&lt;#names&gt;() {
 						<span class="kw">return </span><span class="prelude-val">Some</span>(#indices)
 					}
 				)*
@@ -1542,10 +1542,10 @@
 			</span>}
 
 			<span class="kw">fn </span>name&lt;P: <span class="lifetime">&#39;static</span>&gt;() -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt; {
-				<span class="kw">let </span>type_id = #scrate::sp_std::any::TypeId::of::&lt;P&gt;();
+				<span class="kw">let </span>type_id = #scrate::__private::sp_std::any::TypeId::of::&lt;P&gt;();
 				#(
 					#pallet_attrs
-					<span class="kw">if </span>type_id == #scrate::sp_std::any::TypeId::of::&lt;#names&gt;() {
+					<span class="kw">if </span>type_id == #scrate::__private::sp_std::any::TypeId::of::&lt;#names&gt;() {
 						<span class="kw">return </span><span class="prelude-val">Some</span>(#name_strings)
 					}
 				)*
@@ -1554,10 +1554,10 @@
 			</span>}
 
 			<span class="kw">fn </span>module_name&lt;P: <span class="lifetime">&#39;static</span>&gt;() -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt; {
-				<span class="kw">let </span>type_id = #scrate::sp_std::any::TypeId::of::&lt;P&gt;();
+				<span class="kw">let </span>type_id = #scrate::__private::sp_std::any::TypeId::of::&lt;P&gt;();
 				#(
 					#pallet_attrs
-					<span class="kw">if </span>type_id == #scrate::sp_std::any::TypeId::of::&lt;#names&gt;() {
+					<span class="kw">if </span>type_id == #scrate::__private::sp_std::any::TypeId::of::&lt;#names&gt;() {
 						<span class="kw">return </span><span class="prelude-val">Some</span>(#module_names)
 					}
 				)*
@@ -1566,10 +1566,10 @@
 			</span>}
 
 			<span class="kw">fn </span>crate_version&lt;P: <span class="lifetime">&#39;static</span>&gt;() -&gt; <span class="prelude-ty">Option</span>&lt;#scrate::traits::CrateVersion&gt; {
-				<span class="kw">let </span>type_id = #scrate::sp_std::any::TypeId::of::&lt;P&gt;();
+				<span class="kw">let </span>type_id = #scrate::__private::sp_std::any::TypeId::of::&lt;P&gt;();
 				#(
 					#pallet_attrs
-					<span class="kw">if </span>type_id == #scrate::sp_std::any::TypeId::of::&lt;#names&gt;() {
+					<span class="kw">if </span>type_id == #scrate::__private::sp_std::any::TypeId::of::&lt;#names&gt;() {
 						<span class="kw">return </span><span class="prelude-val">Some</span>(
 							&lt;#pallet_structs <span class="kw">as </span>#scrate::traits::PalletInfoAccess&gt;::crate_version()
 						)
@@ -1590,7 +1590,7 @@
 
 			<span class="attr">#[test]
 			</span><span class="kw">pub fn </span>runtime_integrity_tests() {
-				#scrate::sp_tracing::try_init_simple();
+				#scrate::__private::sp_tracing::try_init_simple();
 				&lt;AllPalletsWithSystem <span class="kw">as </span>#scrate::traits::IntegrityTest&gt;::integrity_test();
 			}
 		}
@@ -1611,7 +1611,7 @@
 		);
 
 		<span class="macro">quote! </span>{
-			#<span class="macro">scrate::tt_call! </span>{
+			#<span class="macro">scrate::__private::tt_call! </span>{
 				<span class="kw">macro </span>= [{ #path::tt_error_token }]
 				frame_support = [{ #scrate }]
 				~~&gt; #<span class="macro">scrate::assert_error_encoded_size! </span>{

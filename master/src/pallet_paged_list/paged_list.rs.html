@@ -989,12 +989,12 @@
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>mock {
 	<span class="kw">pub use super</span>::<span class="kw-2">*</span>;
 	<span class="kw">pub use </span>frame_support::{
-		metadata_ir::{StorageEntryModifierIR, StorageEntryTypeIR, StorageHasherIR},
 		parameter_types,
 		storage::{types::ValueQuery, StorageList <span class="kw">as _</span>},
 		StorageNoopGuard,
 	};
 	<span class="kw">pub use </span>sp_io::{hashing::twox_128, TestExternalities};
+	<span class="kw">pub use </span>sp_metadata_ir::{StorageEntryModifierIR, StorageEntryTypeIR, StorageHasherIR};
 
 	<span class="macro">parameter_types! </span>{
 		<span class="kw">pub const </span>ValuesPerNewPage: u32 = <span class="number">5</span>;

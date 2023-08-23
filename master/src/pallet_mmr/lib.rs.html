@@ -370,6 +370,7 @@
 <a href="#370" id="370">370</a>
 <a href="#371" id="371">371</a>
 <a href="#372" id="372">372</a>
+<a href="#373" id="373">373</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -428,8 +429,9 @@
 //! NOTE This pallet is experimental and not proven to work in production.
 </span><span class="attr">#![cfg_attr(not(feature = <span class="string">&quot;std&quot;</span>), no_std)]
 
-</span><span class="kw">use </span>frame_support::{log, weights::Weight};
+</span><span class="kw">use </span>frame_support::weights::Weight;
 <span class="kw">use </span>frame_system::pallet_prelude::{BlockNumberFor, HeaderFor};
+<span class="kw">use </span>log;
 <span class="kw">use </span>sp_mmr_primitives::utils;
 <span class="kw">use </span>sp_runtime::{
 	traits::{<span class="self">self</span>, One, Saturating},

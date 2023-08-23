@@ -225,7 +225,7 @@
 	<span class="kw">let </span>genesis_config_item =
 		<span class="kw-2">&amp;mut </span>def.item.content.as_mut().expect(<span class="string">&quot;Checked by def parser&quot;</span>).<span class="number">1</span>[genesis_config.index];
 
-	<span class="kw">let </span>serde_crate = <span class="macro">format!</span>(<span class="string">&quot;{}::serde&quot;</span>, frame_support);
+	<span class="kw">let </span>serde_crate = <span class="macro">format!</span>(<span class="string">&quot;{}::__private::serde&quot;</span>, frame_support);
 
 	<span class="kw">match </span>genesis_config_item {
 		syn::Item::Enum(syn::ItemEnum { attrs, .. }) |

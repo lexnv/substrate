@@ -260,7 +260,7 @@
 			<span class="attr">#[doc(hidden)]
 			#[codec(skip)]
 			</span>__Ignore(
-				#frame_support::sp_std::marker::PhantomData&lt;(#event_use_gen)&gt;,
+				#frame_support::__private::sp_std::marker::PhantomData&lt;(#event_use_gen)&gt;,
 				#frame_support::Never,
 			)
 		);
@@ -282,9 +282,9 @@
 			#frame_support::EqNoBound,
 			#frame_support::PartialEqNoBound,
 			#frame_support::RuntimeDebugNoBound,
-			#frame_support::codec::Encode,
-			#frame_support::codec::Decode,
-			#frame_support::scale_info::TypeInfo,
+			#frame_support::__private::codec::Encode,
+			#frame_support::__private::codec::Decode,
+			#frame_support::__private::scale_info::TypeInfo,
 		)]
 	</span>));
 

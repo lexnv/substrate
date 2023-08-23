@@ -155,7 +155,7 @@
 
 <span class="kw">impl </span>Default <span class="kw">for </span>StorageNoopGuard {
 	<span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
-		<span class="self">Self</span>(frame_support::storage_root(frame_support::StateVersion::V1))
+		<span class="self">Self</span>(sp_io::storage::root(sp_runtime::StateVersion::V1))
 	}
 }
 
@@ -166,7 +166,7 @@
 			<span class="kw">return
 		</span>}
 		<span class="macro">assert_eq!</span>(
-			frame_support::storage_root(frame_support::StateVersion::V1),
+			sp_io::storage::root(sp_runtime::StateVersion::V1),
 			<span class="self">self</span>.<span class="number">0</span>,
 			<span class="string">&quot;StorageNoopGuard detected wrongful storage changes.&quot;</span>,
 		);

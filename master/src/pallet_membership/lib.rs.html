@@ -825,6 +825,7 @@
 <a href="#825" id="825">825</a>
 <a href="#826" id="826">826</a>
 <a href="#827" id="827">827</a>
+<a href="#828" id="828">828</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1352,12 +1353,13 @@
 
 	<span class="kw">use </span>sp_core::H256;
 	<span class="kw">use </span>sp_runtime::{
+		bounded_vec,
 		traits::{BadOrigin, BlakeTwo256, IdentityLookup},
 		BuildStorage,
 	};
 
 	<span class="kw">use </span>frame_support::{
-		assert_noop, assert_ok, bounded_vec, ord_parameter_types, parameter_types,
+		assert_noop, assert_ok, ord_parameter_types, parameter_types,
 		traits::{ConstU32, ConstU64, StorageVersion},
 	};
 	<span class="kw">use </span>frame_system::EnsureSignedBy;

@@ -1641,6 +1641,8 @@
 <a href="#1641" id="1641">1641</a>
 <a href="#1642" id="1642">1642</a>
 <a href="#1643" id="1643">1643</a>
+<a href="#1644" id="1644">1644</a>
+<a href="#1645" id="1645">1645</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1782,6 +1784,8 @@
 <span class="kw">use </span>sp_std::{marker::PhantomData, prelude::<span class="kw-2">*</span>};
 
 <span class="attr">#[cfg(feature = <span class="string">&quot;try-runtime&quot;</span>)]
+</span><span class="kw">use </span>log;
+<span class="attr">#[cfg(feature = <span class="string">&quot;try-runtime&quot;</span>)]
 </span><span class="kw">use </span>sp_runtime::TryRuntimeError;
 
 <span class="attr">#[allow(dead_code)]
@@ -1895,7 +1899,7 @@
 		signature_check: bool,
 		select: frame_try_runtime::TryStateSelect,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;Weight, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt; {
-		<span class="macro">frame_support::log::info!</span>(
+		<span class="macro">log::info!</span>(
 			target: LOG_TARGET,
 			<span class="string">&quot;try-runtime: executing block #{:?} / state root check: {:?} / signature check: {:?} / try-state-select: {:?}&quot;</span>,
 			block.header().number(),
@@ -1932,7 +1936,7 @@
 
 		<span class="kw">for </span>e <span class="kw">in </span>extrinsics {
 			<span class="kw">if let </span><span class="prelude-val">Err</span>(err) = try_apply_extrinsic(e.clone()) {
-				<span class="macro">frame_support::log::error!</span>(
+				<span class="macro">log::error!</span>(
 					target: LOG_TARGET, <span class="string">&quot;executing transaction {:?} failed due to {:?}. Aborting the rest of the block execution.&quot;</span>,
 					e,
 					err,
@@ -1951,7 +1955,7 @@
 			BlockNumberFor&lt;System&gt;,
 		&gt;&gt;::try_state(<span class="kw-2">*</span>header.number(), select)
 		.map_err(|e| {
-			<span class="macro">frame_support::log::error!</span>(target: LOG_TARGET, <span class="string">&quot;failure: {:?}&quot;</span>, e);
+			<span class="macro">log::error!</span>(target: LOG_TARGET, <span class="string">&quot;failure: {:?}&quot;</span>, e);
 			e
 		})<span class="question-mark">?</span>;
 		drop(_guard);
@@ -1981,7 +1985,7 @@
 			);
 		}
 
-		<span class="macro">frame_support::log::info!</span>(
+		<span class="macro">log::info!</span>(
 			target: LOG_TARGET,
 			<span class="string">&quot;try-runtime: Block #{:?} successfully executed&quot;</span>,
 			header.number(),

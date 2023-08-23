@@ -685,6 +685,9 @@
 <a href="#685" id="685">685</a>
 <a href="#686" id="686">686</a>
 <a href="#687" id="687">687</a>
+<a href="#688" id="688">688</a>
+<a href="#689" id="689">689</a>
+<a href="#690" id="690">690</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -769,7 +772,7 @@
 //! # use frame_election_provider_support::{*, data_provider};
 //! # use sp_npos_elections::{Support, Assignment};
 //! # use frame_support::traits::ConstU32;
-//! # use frame_support::bounded_vec;
+//! # use sp_runtime::bounded_vec;
 //!
 //! type AccountId = u64;
 //! type Balance = u64;
@@ -864,14 +867,17 @@
 <span class="kw">pub mod </span>onchain;
 <span class="kw">pub mod </span>traits;
 
-<span class="kw">use </span>sp_runtime::traits::{Bounded, Saturating, Zero};
+<span class="kw">use </span>sp_runtime::{
+	traits::{Bounded, Saturating, Zero},
+	RuntimeDebug,
+};
 <span class="kw">use </span>sp_std::{fmt::Debug, prelude::<span class="kw-2">*</span>};
 
 <span class="kw">pub use </span>bounds::DataProviderBounds;
 <span class="kw">pub use </span>codec::{Decode, Encode};
 <span class="doccomment">/// Re-export the solution generation macro.
 </span><span class="kw">pub use </span>frame_election_provider_solution_type::generate_solution_type;
-<span class="kw">pub use </span>frame_support::{traits::Get, weights::Weight, BoundedVec, RuntimeDebug};
+<span class="kw">pub use </span>frame_support::{traits::Get, weights::Weight, BoundedVec};
 <span class="doccomment">/// Re-export some type as they are used in the interface.
 </span><span class="kw">pub use </span>sp_arithmetic::PerThing;
 <span class="kw">pub use </span>sp_npos_elections::{

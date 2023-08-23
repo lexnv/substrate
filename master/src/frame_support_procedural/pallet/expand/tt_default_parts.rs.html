@@ -238,7 +238,7 @@
 				<span class="macro-nonterminal">$caller</span>:tt
 				frame_support = [{ $(<span class="macro-nonterminal">$frame_support</span>:ident)::* }]
 			} =&gt; {
-				$(<span class="macro-nonterminal">$frame_support</span>)<span class="kw-2">*</span><span class="macro">::tt_return! </span>{
+				$(<span class="macro-nonterminal">$frame_support</span>)<span class="kw-2">*</span><span class="macro">::__private::tt_return! </span>{
 					<span class="macro-nonterminal">$caller
 					</span>tokens = [{
 						expanded::{
@@ -268,7 +268,7 @@
 				<span class="macro-nonterminal">$caller</span>:tt
 				frame_support = [{ $(<span class="macro-nonterminal">$frame_support</span>:ident)::* }]
 			} =&gt; {
-				$(<span class="macro-nonterminal">$frame_support</span>)<span class="kw-2">*</span><span class="macro">::tt_return! </span>{
+				$(<span class="macro-nonterminal">$frame_support</span>)<span class="kw-2">*</span><span class="macro">::__private::tt_return! </span>{
 					<span class="macro-nonterminal">$caller
 					</span>tokens = [{
 						expanded::{

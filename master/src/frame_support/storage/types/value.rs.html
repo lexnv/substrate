@@ -387,6 +387,7 @@
 <a href="#387" id="387">387</a>
 <a href="#388" id="388">388</a>
 <a href="#389" id="389">389</a>
+<a href="#390" id="390">390</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -407,7 +408,6 @@
 </span><span class="doccomment">//! Storage value type. Implements StorageValue trait and its method directly.
 
 </span><span class="kw">use crate</span>::{
-	metadata_ir::{StorageEntryMetadataIR, StorageEntryTypeIR},
 	storage::{
 		generator::StorageValue <span class="kw">as </span>StorageValueT,
 		types::{OptionQuery, QueryKindTrait, StorageEntryMetadataBuilder},
@@ -417,6 +417,7 @@
 };
 <span class="kw">use </span>codec::{Decode, Encode, EncodeLike, FullCodec, MaxEncodedLen};
 <span class="kw">use </span>sp_arithmetic::traits::SaturatedConversion;
+<span class="kw">use </span>sp_metadata_ir::{StorageEntryMetadataIR, StorageEntryTypeIR};
 <span class="kw">use </span>sp_std::prelude::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// A type that allow to store a value.
@@ -667,8 +668,9 @@
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>test {
 	<span class="kw">use super</span>::<span class="kw-2">*</span>;
-	<span class="kw">use crate</span>::{metadata_ir::StorageEntryModifierIR, storage::types::ValueQuery};
+	<span class="kw">use </span><span class="kw">crate</span>::storage::types::ValueQuery;
 	<span class="kw">use </span>sp_io::{hashing::twox_128, TestExternalities};
+	<span class="kw">use </span>sp_metadata_ir::StorageEntryModifierIR;
 
 	<span class="kw">struct </span>Prefix;
 	<span class="kw">impl </span>StorageInstance <span class="kw">for </span>Prefix {

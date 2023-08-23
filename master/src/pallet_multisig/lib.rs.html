@@ -735,14 +735,14 @@
 	ensure,
 	traits::{Currency, Get, ReservableCurrency},
 	weights::Weight,
-	BoundedVec, RuntimeDebug,
+	BoundedVec,
 };
 <span class="kw">use </span>frame_system::{<span class="self">self </span><span class="kw">as </span>system, pallet_prelude::BlockNumberFor, RawOrigin};
 <span class="kw">use </span>scale_info::TypeInfo;
 <span class="kw">use </span>sp_io::hashing::blake2_256;
 <span class="kw">use </span>sp_runtime::{
 	traits::{Dispatchable, TrailingZeroInput, Zero},
-	DispatchError,
+	DispatchError, RuntimeDebug,
 };
 <span class="kw">use </span>sp_std::prelude::<span class="kw-2">*</span>;
 <span class="kw">pub use </span>weights::WeightInfo;

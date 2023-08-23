@@ -712,14 +712,14 @@
 
 </span><span class="kw">mod </span>mock;
 
-<span class="kw">use </span>frame_support::{assert_noop, assert_ok, bounded_btree_map, traits::Currency};
+<span class="kw">use </span>frame_support::{assert_noop, assert_ok, traits::Currency};
 <span class="kw">use </span>mock::<span class="kw-2">*</span>;
 <span class="kw">use </span>pallet_nomination_pools::{
 	BondedPools, Error <span class="kw">as </span>PoolsError, Event <span class="kw">as </span>PoolsEvent, LastPoolId, PoolMember, PoolMembers,
 	PoolState,
 };
 <span class="kw">use </span>pallet_staking::{CurrentEra, Event <span class="kw">as </span>StakingEvent, Payee, RewardDestination};
-<span class="kw">use </span>sp_runtime::traits::Zero;
+<span class="kw">use </span>sp_runtime::{bounded_btree_map, traits::Zero};
 
 <span class="attr">#[test]
 </span><span class="kw">fn </span>pool_lifecycle_e2e() {

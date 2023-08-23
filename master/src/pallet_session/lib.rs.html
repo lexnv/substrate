@@ -1055,8 +1055,8 @@
 </span><span class="kw">mod </span>tests;
 <span class="kw">pub mod </span>weights;
 
+<span class="kw">use </span>codec::{Decode, MaxEncodedLen};
 <span class="kw">use </span>frame_support::{
-	codec::{Decode, MaxEncodedLen},
 	dispatch::{DispatchError, DispatchResult},
 	ensure,
 	traits::{

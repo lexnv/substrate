@@ -207,8 +207,8 @@
 
 		#types
 
-		<span class="kw">use </span>#scrate::serde <span class="kw">as </span>__genesis_config_serde_import__;
-		<span class="attr">#[derive(#scrate::serde::Serialize, #scrate::serde::Deserialize, Default)]
+		<span class="kw">use </span>#scrate::__private::serde <span class="kw">as </span>__genesis_config_serde_import__;
+		<span class="attr">#[derive(#scrate::__private::serde::Serialize, #scrate::__private::serde::Deserialize, Default)]
 		#[serde(rename_all = <span class="string">&quot;camelCase&quot;</span>)]
 		#[serde(deny_unknown_fields)]
 		#[serde(<span class="kw">crate </span>= <span class="string">&quot;__genesis_config_serde_import__&quot;</span>)]
@@ -226,7 +226,7 @@
 				<span class="kw-2">&amp;</span><span class="self">self</span>,
 				storage: <span class="kw-2">&amp;mut </span>#scrate::sp_runtime::Storage,
 			) -&gt; std::result::Result&lt;(), String&gt; {
-				#scrate::BasicExternalities::execute_with_storage(storage, || {
+				#scrate::__private::BasicExternalities::execute_with_storage(storage, || {
 					&lt;<span class="self">Self </span><span class="kw">as </span>#scrate::traits::BuildGenesisConfig&gt;::build(<span class="kw-2">&amp;</span><span class="self">self</span>);
 					<span class="prelude-val">Ok</span>(())
 				})

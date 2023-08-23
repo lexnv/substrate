@@ -1093,7 +1093,6 @@
 <a href="#1093" id="1093">1093</a>
 <a href="#1094" id="1094">1094</a>
 <a href="#1095" id="1095">1095</a>
-<a href="#1096" id="1096">1096</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1114,31 +1113,30 @@
 </span><span class="doccomment">//! Dispatch system. Contains a macro for defining runtime modules and
 //! generating values representing lazy module function calls.
 
-</span><span class="kw">pub use crate</span>::{
-	codec::{
-		Codec, Decode, Encode, EncodeAsRef, EncodeLike, HasCompact, Input, MaxEncodedLen, Output,
-	},
-	scale_info::TypeInfo,
-	sp_std::{
-		fmt, marker,
-		prelude::{Clone, Eq, PartialEq, Vec},
-		result,
-	},
-	traits::{
-		CallMetadata, GetCallIndex, GetCallMetadata, GetCallName, GetStorageVersion,
-		UnfilteredDispatchable,
-	},
+</span><span class="kw">pub use </span><span class="kw">crate</span>::traits::{
+	CallMetadata, GetCallIndex, GetCallMetadata, GetCallName, GetStorageVersion,
+	UnfilteredDispatchable,
 };
+<span class="kw">pub use </span>codec::{
+	Codec, Decode, Encode, EncodeAsRef, EncodeLike, HasCompact, Input, MaxEncodedLen, Output,
+};
+<span class="kw">pub use </span>scale_info::TypeInfo;
+<span class="kw">pub use </span>sp_runtime::{
+	traits::Dispatchable, transaction_validity::TransactionPriority, DispatchError, RuntimeDebug,
+};
+<span class="kw">pub use </span>sp_std::{
+	fmt, marker,
+	prelude::{Clone, Eq, PartialEq, Vec},
+	result,
+};
+<span class="kw">pub use </span>sp_weights::Weight;
+
 <span class="attr">#[cfg(feature = <span class="string">&quot;std&quot;</span>)]
 </span><span class="kw">use </span>serde::{Deserialize, Serialize};
 <span class="kw">use </span>sp_runtime::{
 	generic::{CheckedExtrinsic, UncheckedExtrinsic},
 	traits::SignedExtension,
 };
-<span class="kw">pub use </span>sp_runtime::{
-	traits::Dispatchable, transaction_validity::TransactionPriority, DispatchError, RuntimeDebug,
-};
-<span class="kw">pub use </span>sp_weights::Weight;
 
 <span class="doccomment">/// The return type of a `Dispatchable` in frame. When returned explicitly from
 /// a dispatchable function it allows overriding the default `PostDispatchInfo`

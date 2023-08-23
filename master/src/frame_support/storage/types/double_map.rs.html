@@ -968,9 +968,6 @@
 <a href="#968" id="968">968</a>
 <a href="#969" id="969">969</a>
 <a href="#970" id="970">970</a>
-<a href="#971" id="971">971</a>
-<a href="#972" id="972">972</a>
-<a href="#973" id="973">973</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -992,7 +989,6 @@
 //! StoragePrefixedDoubleMap traits and their methods directly.
 
 </span><span class="kw">use crate</span>::{
-	metadata_ir::{StorageEntryMetadataIR, StorageEntryTypeIR},
 	storage::{
 		types::{OptionQuery, QueryKindTrait, StorageEntryMetadataBuilder},
 		KeyLenOf, StorageAppend, StorageDecodeLength, StoragePrefixedMap, StorageTryAppend,
@@ -1002,6 +998,7 @@
 };
 <span class="kw">use </span>codec::{Decode, Encode, EncodeLike, FullCodec, MaxEncodedLen};
 <span class="kw">use </span>sp_arithmetic::traits::SaturatedConversion;
+<span class="kw">use </span>sp_metadata_ir::{StorageEntryMetadataIR, StorageEntryTypeIR};
 <span class="kw">use </span>sp_std::prelude::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// A type that allow to store values for `(key1, key2)` couple. Similar to `StorageMap` but allow
@@ -1707,12 +1704,9 @@
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>test {
 	<span class="kw">use super</span>::<span class="kw-2">*</span>;
-	<span class="kw">use crate</span>::{
-		hash::<span class="kw-2">*</span>,
-		metadata_ir::{StorageEntryModifierIR, StorageEntryTypeIR, StorageHasherIR},
-		storage::types::ValueQuery,
-	};
+	<span class="kw">use crate</span>::{hash::<span class="kw-2">*</span>, storage::types::ValueQuery};
 	<span class="kw">use </span>sp_io::{hashing::twox_128, TestExternalities};
+	<span class="kw">use </span>sp_metadata_ir::{StorageEntryModifierIR, StorageEntryTypeIR, StorageHasherIR};
 
 	<span class="kw">struct </span>Prefix;
 	<span class="kw">impl </span>StorageInstance <span class="kw">for </span>Prefix {

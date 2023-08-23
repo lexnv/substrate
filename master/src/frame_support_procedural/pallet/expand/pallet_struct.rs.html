@@ -336,7 +336,7 @@
 	</span><span class="kw">if let </span><span class="prelude-val">Some</span>(field) = pallet_item.fields.iter_mut().next() {
 		<span class="kw">if </span>field.ty == <span class="macro">syn::parse_quote!</span>(<span class="kw">_</span>) {
 			field.ty = <span class="macro">syn::parse_quote!</span>(
-				#frame_support::sp_std::marker::PhantomData&lt;(#type_use_gen)&gt;
+				#frame_support::__private::sp_std::marker::PhantomData&lt;(#type_use_gen)&gt;
 			);
 		}
 	}
@@ -364,9 +364,9 @@
 		<span class="macro">quote::quote_spanned!</span>(def.pallet_struct.attr_span =&gt;
 			<span class="kw">impl</span>&lt;#type_impl_gen&gt; #pallet_ident&lt;#type_use_gen&gt; #config_where_clause {
 				<span class="attr">#[doc(hidden)]
-				</span><span class="kw">pub fn </span>error_metadata() -&gt; <span class="prelude-ty">Option</span>&lt;#frame_support::metadata_ir::PalletErrorMetadataIR&gt; {
-					<span class="prelude-val">Some</span>(#frame_support::metadata_ir::PalletErrorMetadataIR {
-						ty: #frame_support::scale_info::meta_type::&lt;#error_ident&lt;#type_use_gen&gt;&gt;()
+				</span><span class="kw">pub fn </span>error_metadata() -&gt; <span class="prelude-ty">Option</span>&lt;#frame_support::__private::metadata_ir::PalletErrorMetadataIR&gt; {
+					<span class="prelude-val">Some</span>(#frame_support::__private::metadata_ir::PalletErrorMetadataIR {
+						ty: #frame_support::__private::scale_info::meta_type::&lt;#error_ident&lt;#type_use_gen&gt;&gt;()
 					})
 				}
 			}
@@ -375,7 +375,7 @@
 		<span class="macro">quote::quote_spanned!</span>(def.pallet_struct.attr_span =&gt;
 			<span class="kw">impl</span>&lt;#type_impl_gen&gt; #pallet_ident&lt;#type_use_gen&gt; #config_where_clause {
 				<span class="attr">#[doc(hidden)]
-				</span><span class="kw">pub fn </span>error_metadata() -&gt; <span class="prelude-ty">Option</span>&lt;#frame_support::metadata_ir::PalletErrorMetadataIR&gt; {
+				</span><span class="kw">pub fn </span>error_metadata() -&gt; <span class="prelude-ty">Option</span>&lt;#frame_support::__private::metadata_ir::PalletErrorMetadataIR&gt; {
 					<span class="prelude-val">None
 				</span>}
 			}
@@ -421,10 +421,10 @@
 			#storages_where_clauses
 		{
 			<span class="kw">fn </span>storage_info()
-				-&gt; #frame_support::sp_std::vec::Vec&lt;#frame_support::traits::StorageInfo&gt;
+				-&gt; #frame_support::__private::sp_std::vec::Vec&lt;#frame_support::traits::StorageInfo&gt;
 			{
 				<span class="attr">#[allow(unused_mut)]
-				</span><span class="kw">let </span><span class="kw-2">mut </span>res = #<span class="macro">frame_support::sp_std::vec!</span>[];
+				</span><span class="kw">let </span><span class="kw-2">mut </span>res = #<span class="macro">frame_support::__private::sp_std::vec!</span>[];
 
 				#(
 					#(#storage_cfg_attrs)*
@@ -461,8 +461,8 @@
 	<span class="kw">let </span>whitelisted_storage_keys_impl = <span class="macro">quote::quote!</span>[
 		<span class="kw">use </span>#frame_support::traits::{StorageInfoTrait, TrackedStorageKey, WhitelistedStorageKeys};
 		<span class="kw">impl</span>&lt;#type_impl_gen&gt; WhitelistedStorageKeys <span class="kw">for </span>#pallet_ident&lt;#type_use_gen&gt; #storages_where_clauses {
-			<span class="kw">fn </span>whitelisted_storage_keys() -&gt; #frame_support::sp_std::vec::Vec&lt;TrackedStorageKey&gt; {
-				<span class="kw">use </span>#frame_support::sp_std::vec;
+			<span class="kw">fn </span>whitelisted_storage_keys() -&gt; #frame_support::__private::sp_std::vec::Vec&lt;TrackedStorageKey&gt; {
+				<span class="kw">use </span>#frame_support::__private::sp_std::vec;
 				<span class="macro">vec!</span>[#(
 					TrackedStorageKey::new(#whitelisted_storage_idents::&lt;#type_use_gen&gt;::hashed_key().to_vec())
 				),<span class="kw-2">*</span>]
@@ -546,7 +546,7 @@
 			#config_where_clause
 		{
 			<span class="kw">fn </span>count() -&gt; usize { <span class="number">1 </span>}
-			<span class="kw">fn </span>infos() -&gt; #frame_support::sp_std::vec::Vec&lt;#frame_support::traits::PalletInfoData&gt; {
+			<span class="kw">fn </span>infos() -&gt; #frame_support::__private::sp_std::vec::Vec&lt;#frame_support::traits::PalletInfoData&gt; {
 				<span class="kw">use </span>#frame_support::traits::PalletInfoAccess;
 				<span class="kw">let </span>item = #frame_support::traits::PalletInfoData {
 					index: <span class="self">Self</span>::index(),
@@ -554,7 +554,7 @@
 					module_name: <span class="self">Self</span>::module_name(),
 					crate_version: <span class="self">Self</span>::crate_version(),
 				};
-				#<span class="macro">frame_support::sp_std::vec!</span>[item]
+				#<span class="macro">frame_support::__private::sp_std::vec!</span>[item]
 			}
 		}
 

@@ -321,7 +321,7 @@
 	<span class="kw">let </span>log_runtime_upgrade = <span class="kw">if </span>has_runtime_upgrade {
 		<span class="comment">// a migration is defined here.
 		</span><span class="macro">quote::quote! </span>{
-			#<span class="macro">frame_support::log::info!</span>(
+			#<span class="macro">frame_support::__private::log::info!</span>(
 				target: #frame_support::LOG_TARGET,
 				<span class="string">&quot;⚠️ {} declares internal migrations (which *might* execute). \
 				 On-chain `{:?}` vs current storage version `{:?}`&quot;</span>,
@@ -333,7 +333,7 @@
 	} <span class="kw">else </span>{
 		<span class="comment">// default.
 		</span><span class="macro">quote::quote! </span>{
-			#<span class="macro">frame_support::log::debug!</span>(
+			#<span class="macro">frame_support::__private::log::debug!</span>(
 				target: #frame_support::LOG_TARGET,
 				<span class="string">&quot;✅ no migration for {}&quot;</span>,
 				pallet_name,
@@ -347,7 +347,7 @@
 			<span class="kw">as
 			</span>#frame_support::traits::PalletInfo
 		&gt;::name::&lt;<span class="self">Self</span>&gt;().expect(<span class="string">&quot;No name found for the pallet! This usually means that the pallet wasn&#39;t added to `construct_runtime!`.&quot;</span>);
-		#<span class="macro">frame_support::log::debug!</span>(
+		#<span class="macro">frame_support::__private::log::debug!</span>(
 			target: #frame_support::LOG_TARGET,
 			<span class="string">&quot;🩺 try-state pallet {:?}&quot;</span>,
 			pallet_name,
@@ -380,7 +380,7 @@
 					</span>#frame_support::traits::PalletInfo
 				&gt;::name::&lt;<span class="self">Self</span>&gt;().unwrap_or(<span class="string">&quot;&lt;unknown pallet name&gt;&quot;</span>);
 
-				#<span class="macro">frame_support::log::error!</span>(
+				#<span class="macro">frame_support::__private::log::error!</span>(
 					target: #frame_support::LOG_TARGET,
 					<span class="string">&quot;{}: On chain storage version {:?} doesn&#39;t match current storage version {:?}.&quot;</span>,
 					pallet_name,
@@ -402,7 +402,7 @@
 					</span>#frame_support::traits::PalletInfo
 				&gt;::name::&lt;<span class="self">Self</span>&gt;().unwrap_or(<span class="string">&quot;&lt;unknown pallet name&gt;&quot;</span>);
 
-				#<span class="macro">frame_support::log::error!</span>(
+				#<span class="macro">frame_support::__private::log::error!</span>(
 					target: #frame_support::LOG_TARGET,
 					<span class="string">&quot;{}: On chain storage version {:?} is set to non zero, \
 					 while the pallet is missing the `#[pallet::storage_version(VERSION)]` attribute.&quot;</span>,
@@ -424,8 +424,8 @@
 			<span class="kw">for </span>#pallet_ident&lt;#type_use_gen&gt; #where_clause
 		{
 			<span class="kw">fn </span>on_finalize(n: #frame_system::pallet_prelude::BlockNumberFor::&lt;T&gt;) {
-				#<span class="macro">frame_support::sp_tracing::enter_span!</span>(
-					#<span class="macro">frame_support::sp_tracing::trace_span!</span>(<span class="string">&quot;on_finalize&quot;</span>)
+				#<span class="macro">frame_support::__private::sp_tracing::enter_span!</span>(
+					#<span class="macro">frame_support::__private::sp_tracing::trace_span!</span>(<span class="string">&quot;on_finalize&quot;</span>)
 				);
 				&lt;
 					<span class="self">Self </span><span class="kw">as </span>#frame_support::traits::Hooks&lt;
@@ -458,8 +458,8 @@
 			<span class="kw">fn </span>on_initialize(
 				n: #frame_system::pallet_prelude::BlockNumberFor::&lt;T&gt;
 			) -&gt; #frame_support::weights::Weight {
-				#<span class="macro">frame_support::sp_tracing::enter_span!</span>(
-					#<span class="macro">frame_support::sp_tracing::trace_span!</span>(<span class="string">&quot;on_initialize&quot;</span>)
+				#<span class="macro">frame_support::__private::sp_tracing::enter_span!</span>(
+					#<span class="macro">frame_support::__private::sp_tracing::trace_span!</span>(<span class="string">&quot;on_initialize&quot;</span>)
 				);
 				&lt;
 					<span class="self">Self </span><span class="kw">as </span>#frame_support::traits::Hooks&lt;
@@ -474,8 +474,8 @@
 			<span class="kw">for </span>#pallet_ident&lt;#type_use_gen&gt; #where_clause
 		{
 			<span class="kw">fn </span>on_runtime_upgrade() -&gt; #frame_support::weights::Weight {
-				#<span class="macro">frame_support::sp_tracing::enter_span!</span>(
-					#<span class="macro">frame_support::sp_tracing::trace_span!</span>(<span class="string">&quot;on_runtime_update&quot;</span>)
+				#<span class="macro">frame_support::__private::sp_tracing::enter_span!</span>(
+					#<span class="macro">frame_support::__private::sp_tracing::trace_span!</span>(<span class="string">&quot;on_runtime_update&quot;</span>)
 				);
 
 				<span class="comment">// log info about the upgrade.
@@ -494,7 +494,7 @@
 			}
 
 			<span class="attr">#[cfg(feature = <span class="string">&quot;try-runtime&quot;</span>)]
-			</span><span class="kw">fn </span>pre_upgrade() -&gt; <span class="prelude-ty">Result</span>&lt;#frame_support::sp_std::vec::Vec&lt;u8&gt;, #frame_support::sp_runtime::TryRuntimeError&gt; {
+			</span><span class="kw">fn </span>pre_upgrade() -&gt; <span class="prelude-ty">Result</span>&lt;#frame_support::__private::sp_std::vec::Vec&lt;u8&gt;, #frame_support::sp_runtime::TryRuntimeError&gt; {
 				&lt;
 					<span class="self">Self
 					</span><span class="kw">as
@@ -503,7 +503,7 @@
 			}
 
 			<span class="attr">#[cfg(feature = <span class="string">&quot;try-runtime&quot;</span>)]
-			</span><span class="kw">fn </span>post_upgrade(state: #frame_support::sp_std::vec::Vec&lt;u8&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), #frame_support::sp_runtime::TryRuntimeError&gt; {
+			</span><span class="kw">fn </span>post_upgrade(state: #frame_support::__private::sp_std::vec::Vec&lt;u8&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), #frame_support::sp_runtime::TryRuntimeError&gt; {
 				#post_storage_version_check
 
 				&lt;
@@ -534,7 +534,7 @@
 			<span class="kw">for </span>#pallet_ident&lt;#type_use_gen&gt; #where_clause
 			{
 				<span class="kw">fn </span>integrity_test() {
-					#frame_support::sp_io::TestExternalities::default().execute_with(|| {
+					#frame_support::__private::sp_io::TestExternalities::default().execute_with(|| {
 						&lt;
 							<span class="self">Self </span><span class="kw">as </span>#frame_support::traits::Hooks&lt;
 								#frame_system::pallet_prelude::BlockNumberFor::&lt;T&gt;

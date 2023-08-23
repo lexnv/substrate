@@ -1744,7 +1744,7 @@
 		<span class="prelude-val">Ok</span>(ident) =&gt; ident,
 		<span class="prelude-val">Err</span>(err) =&gt; <span class="kw">return </span>err.to_compile_error().into(),
 	};
-	<span class="kw">let </span>codec = <span class="macro">quote!</span>(#krate::frame_support::codec);
+	<span class="kw">let </span>codec = <span class="macro">quote!</span>(#krate::frame_support::__private::codec);
 	<span class="kw">let </span>traits = <span class="macro">quote!</span>(#krate::frame_support::traits);
 	<span class="kw">let </span>setup_stmts = benchmark_def.setup_stmts;
 	<span class="kw">let </span>verify_stmts = benchmark_def.verify_stmts;

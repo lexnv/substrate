@@ -1300,13 +1300,13 @@
 </span><span class="attr">#![cfg_attr(not(feature = <span class="string">&quot;std&quot;</span>), no_std)]
 #![recursion_limit = <span class="string">&quot;128&quot;</span>]
 
-</span><span class="kw">use </span>scale_info::TypeInfo;
+</span><span class="kw">use </span>codec::{Decode, Encode, MaxEncodedLen};
+<span class="kw">use </span>scale_info::TypeInfo;
 <span class="kw">use </span>sp_io::storage;
 <span class="kw">use </span>sp_runtime::{traits::Hash, RuntimeDebug};
 <span class="kw">use </span>sp_std::{marker::PhantomData, prelude::<span class="kw-2">*</span>, result};
 
 <span class="kw">use </span>frame_support::{
-	codec::{Decode, Encode, MaxEncodedLen},
 	dispatch::{
 		DispatchError, DispatchResult, DispatchResultWithPostInfo, Dispatchable, GetDispatchInfo,
 		Pays, PostDispatchInfo,

@@ -370,7 +370,7 @@
 		</span><span class="kw">mod </span><span class="macro-nonterminal">$module </span>{
 			<span class="attr">#[allow(unused_imports)]
 			</span><span class="kw">use super</span>::<span class="kw-2">*</span>;
-			<span class="kw">use </span><span class="macro-nonterminal">$crate::sp_std</span>::{boxed::Box, cell::RefCell, mem::{swap, take}, vec::Vec};
+			<span class="kw">use </span><span class="macro-nonterminal">$crate::__private::sp_std</span>::{boxed::Box, cell::RefCell, mem::{swap, take}, vec::Vec};
 			<span class="kw">use </span><span class="macro-nonterminal">$crate::traits::filter</span>::{Contains, FilterStack};
 
 			<span class="macro">thread_local! </span>{

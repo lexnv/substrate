@@ -456,10 +456,10 @@
 
 </span><span class="kw">use </span>codec::{Decode, Encode, MaxEncodedLen};
 <span class="kw">use </span>frame_support::{
-	log,
 	traits::{DisabledValidators, FindAuthor, Get, OnTimestampSet, OneSessionHandler},
 	BoundedSlice, BoundedVec, ConsensusEngineId, Parameter,
 };
+<span class="kw">use </span>log;
 <span class="kw">use </span>sp_consensus_aura::{AuthorityIndex, ConsensusLog, Slot, AURA_ENGINE_ID};
 <span class="kw">use </span>sp_runtime::{
 	generic::DigestItem,

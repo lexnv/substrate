@@ -163,6 +163,7 @@
 <a href="#163" id="163">163</a>
 <a href="#164" id="164">164</a>
 <a href="#165" id="165">165</a>
+<a href="#166" id="166">166</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -186,8 +187,9 @@
 <span class="kw">use crate</span>::{Config, Pallet};
 <span class="kw">use </span>codec::{Decode, Encode, FullCodec};
 <span class="kw">use </span>frame_support::{
-	pallet_prelude::ValueQuery, traits::StorageVersion, weights::Weight, RuntimeDebug, Twox64Concat,
+	pallet_prelude::ValueQuery, traits::StorageVersion, weights::Weight, Twox64Concat,
 };
+<span class="kw">use </span>sp_runtime::RuntimeDebug;
 <span class="kw">use </span>sp_std::prelude::<span class="kw-2">*</span>;
 
 <span class="attr">#[derive(Encode, Decode, Clone, Default, RuntimeDebug, PartialEq)]
