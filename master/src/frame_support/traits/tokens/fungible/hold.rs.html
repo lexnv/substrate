@@ -391,6 +391,10 @@
 <a href="#391" id="391">391</a>
 <a href="#392" id="392">392</a>
 <a href="#393" id="393">393</a>
+<a href="#394" id="394">394</a>
+<a href="#395" id="395">395</a>
+<a href="#396" id="396">396</a>
+<a href="#397" id="397">397</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) 2019-2022 Parity Technologies (UK) Ltd.
@@ -445,8 +449,10 @@
 	/// restrictions on the minimum amount of the account. Note: This cannot bring the account into
 	/// an inconsistent state with regards any required existential deposit.
 	///
-	/// Always less than `total_balance_on_hold()`.
-	</span><span class="kw">fn </span>reducible_total_balance_on_hold(who: <span class="kw-2">&amp;</span>AccountId, force: Fortitude) -&gt; <span class="self">Self</span>::Balance;
+	/// Never more than `total_balance_on_hold()`.
+	</span><span class="kw">fn </span>reducible_total_balance_on_hold(who: <span class="kw-2">&amp;</span>AccountId, _force: Fortitude) -&gt; <span class="self">Self</span>::Balance {
+		<span class="self">Self</span>::total_balance_on_hold(who)
+	}
 
 	<span class="doccomment">/// Amount of funds on hold (for the given reason) of `who`.
 	</span><span class="kw">fn </span>balance_on_hold(reason: <span class="kw-2">&amp;</span><span class="self">Self</span>::Reason, who: <span class="kw-2">&amp;</span>AccountId) -&gt; <span class="self">Self</span>::Balance;
@@ -458,7 +464,9 @@
 	/// NOTE: This does not take into account changes which could be made to the account of `who`
 	/// (such as removing a provider reference) after this call is made. Any usage of this should
 	/// therefore ensure the account is already in the appropriate state prior to calling it.
-	</span><span class="kw">fn </span>hold_available(reason: <span class="kw-2">&amp;</span><span class="self">Self</span>::Reason, who: <span class="kw-2">&amp;</span>AccountId) -&gt; bool;
+	</span><span class="kw">fn </span>hold_available(_reason: <span class="kw-2">&amp;</span><span class="self">Self</span>::Reason, _who: <span class="kw-2">&amp;</span>AccountId) -&gt; bool {
+		<span class="bool-val">true
+	</span>}
 
 	<span class="doccomment">/// Check to see if some `amount` of funds of `who` may be placed on hold with the given
 	/// `reason`. Reasons why this may not be true:

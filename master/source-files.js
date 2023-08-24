@@ -59,6 +59,7 @@ var sourcesIndex = JSON.parse('{\
 "pallet_beefy":["",[],["default_weights.rs","equivocation.rs","lib.rs"]],\
 "pallet_beefy_mmr":["",[],["lib.rs"]],\
 "pallet_bounties":["",[["migrations",[],["mod.rs","v4.rs"]]],["benchmarking.rs","lib.rs","weights.rs"]],\
+"pallet_broker":["",[],["adapt_price.rs","benchmarking.rs","core_mask.rs","coretime_interface.rs","dispatchable_impls.rs","lib.rs","nonfungible_impl.rs","tick_impls.rs","types.rs","utility_impls.rs","weights.rs"]],\
 "pallet_child_bounties":["",[],["benchmarking.rs","lib.rs","weights.rs"]],\
 "pallet_collective":["",[["migrations",[],["mod.rs","v4.rs"]]],["benchmarking.rs","lib.rs","weights.rs"]],\
 "pallet_contracts":["",[["benchmarking",[],["code.rs","mod.rs","sandbox.rs"]],["migration",[],["v09.rs","v10.rs","v11.rs","v12.rs","v13.rs","v14.rs","v15.rs"]],["storage",[],["meter.rs"]],["wasm",[],["mod.rs","prepare.rs","runtime.rs"]]],["address.rs","chain_extension.rs","debug.rs","exec.rs","gas.rs","lib.rs","migration.rs","schedule.rs","storage.rs","weights.rs"]],\

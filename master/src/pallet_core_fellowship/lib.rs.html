@@ -929,7 +929,7 @@
 		</span><span class="attr">#[pallet::weight(T::WeightInfo::set_params())]
 		#[pallet::call_index(<span class="number">1</span>)]
 		</span><span class="kw">pub fn </span>set_params(origin: OriginFor&lt;T&gt;, params: Box&lt;ParamsOf&lt;T, I&gt;&gt;) -&gt; DispatchResult {
-			T::ParamsOrigin::try_origin(origin).map(|<span class="kw">_</span>| ()).or_else(|o| ensure_root(o))<span class="question-mark">?</span>;
+			T::ParamsOrigin::ensure_origin_or_root(origin)<span class="question-mark">?</span>;
 			Params::&lt;T, I&gt;::put(params.as_ref());
 			<span class="self">Self</span>::deposit_event(Event::&lt;T, I&gt;::ParamsChanged { params: <span class="kw-2">*</span>params });
 			<span class="prelude-val">Ok</span>(())

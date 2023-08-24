@@ -388,6 +388,11 @@
 <a href="#388" id="388">388</a>
 <a href="#389" id="389">389</a>
 <a href="#390" id="390">390</a>
+<a href="#391" id="391">391</a>
+<a href="#392" id="392">392</a>
+<a href="#393" id="393">393</a>
+<a href="#394" id="394">394</a>
+<a href="#395" id="395">395</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -523,6 +528,11 @@
 	<span class="doccomment">/// Mutate the value
 	</span><span class="kw">pub fn </span>mutate&lt;R, F: FnOnce(<span class="kw-2">&amp;mut </span>QueryKind::Query) -&gt; R&gt;(f: F) -&gt; R {
 		&lt;<span class="self">Self </span><span class="kw">as </span><span class="kw">crate</span>::storage::StorageValue&lt;Value&gt;&gt;::mutate(f)
+	}
+
+	<span class="doccomment">/// Mutate the value under a key iff it exists. Do nothing and return the default value if not.
+	</span><span class="kw">pub fn </span>mutate_extant&lt;R: Default, F: FnOnce(<span class="kw-2">&amp;mut </span>Value) -&gt; R&gt;(f: F) -&gt; R {
+		&lt;<span class="self">Self </span><span class="kw">as </span><span class="kw">crate</span>::storage::StorageValue&lt;Value&gt;&gt;::mutate_extant(f)
 	}
 
 	<span class="doccomment">/// Mutate the value if closure returns `Ok`

@@ -595,6 +595,32 @@
 <a href="#595" id="595">595</a>
 <a href="#596" id="596">596</a>
 <a href="#597" id="597">597</a>
+<a href="#598" id="598">598</a>
+<a href="#599" id="599">599</a>
+<a href="#600" id="600">600</a>
+<a href="#601" id="601">601</a>
+<a href="#602" id="602">602</a>
+<a href="#603" id="603">603</a>
+<a href="#604" id="604">604</a>
+<a href="#605" id="605">605</a>
+<a href="#606" id="606">606</a>
+<a href="#607" id="607">607</a>
+<a href="#608" id="608">608</a>
+<a href="#609" id="609">609</a>
+<a href="#610" id="610">610</a>
+<a href="#611" id="611">611</a>
+<a href="#612" id="612">612</a>
+<a href="#613" id="613">613</a>
+<a href="#614" id="614">614</a>
+<a href="#615" id="615">615</a>
+<a href="#616" id="616">616</a>
+<a href="#617" id="617">617</a>
+<a href="#618" id="618">618</a>
+<a href="#619" id="619">619</a>
+<a href="#620" id="620">620</a>
+<a href="#621" id="621">621</a>
+<a href="#622" id="622">622</a>
+<a href="#623" id="623">623</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -634,8 +660,34 @@
 		<span class="self">Self</span>::try_origin(o).map_err(|<span class="kw">_</span>| BadOrigin)
 	}
 
+	<span class="doccomment">/// The same as `ensure_origin` except that Root origin will always pass. This can only be
+	/// used if `Success` has a sensible impl of `Default` since that will be used in the result.
+	</span><span class="kw">fn </span>ensure_origin_or_root(o: OuterOrigin) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Success&gt;, BadOrigin&gt;
+	<span class="kw">where
+		</span>OuterOrigin: OriginTrait,
+	{
+		<span class="kw">if </span>o.caller().is_root() {
+			<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>)
+		} <span class="kw">else </span>{
+			<span class="self">Self</span>::ensure_origin(o).map(<span class="prelude-val">Some</span>)
+		}
+	}
+
 	<span class="doccomment">/// Perform the origin check.
 	</span><span class="kw">fn </span>try_origin(o: OuterOrigin) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Success, OuterOrigin&gt;;
+
+	<span class="doccomment">/// The same as `try_origin` except that Root origin will always pass. This can only be
+	/// used if `Success` has a sensible impl of `Default` since that will be used in the result.
+	</span><span class="kw">fn </span>try_origin_or_root(o: OuterOrigin) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Success&gt;, OuterOrigin&gt;
+	<span class="kw">where
+		</span>OuterOrigin: OriginTrait,
+	{
+		<span class="kw">if </span>o.caller().is_root() {
+			<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>)
+		} <span class="kw">else </span>{
+			<span class="self">Self</span>::try_origin(o).map(<span class="prelude-val">Some</span>)
+		}
+	}
 
 	<span class="doccomment">/// Attempt to get an outer origin capable of passing `try_origin` check. May return `Err` if it
 	/// is impossible.
