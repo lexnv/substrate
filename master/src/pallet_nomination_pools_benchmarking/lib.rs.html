@@ -804,6 +804,8 @@
 <a href="#804" id="804">804</a>
 <a href="#805" id="805">805</a>
 <a href="#806" id="806">806</a>
+<a href="#807" id="807">807</a>
+<a href="#808" id="808">808</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -829,11 +831,12 @@
 #[cfg(test)]
 </span><span class="kw">mod </span>mock;
 
-<span class="kw">use </span>frame_benchmarking::v1::{
-	account, frame_support::traits::Currency, vec, whitelist_account, Vec,
-};
+<span class="kw">use </span>frame_benchmarking::v1::{account, whitelist_account};
 <span class="kw">use </span>frame_election_provider_support::SortedListProvider;
-<span class="kw">use </span>frame_support::{assert_ok, ensure, traits::Get};
+<span class="kw">use </span>frame_support::{
+	assert_ok, ensure,
+	traits::{Currency, Get},
+};
 <span class="kw">use </span>frame_system::RawOrigin <span class="kw">as </span>RuntimeOrigin;
 <span class="kw">use </span>pallet_nomination_pools::{
 	BalanceOf, BondExtra, BondedPoolInner, BondedPools, ClaimPermission, ClaimPermissions,
@@ -847,6 +850,7 @@
 	Perbill,
 };
 <span class="kw">use </span>sp_staking::{EraIndex, StakingInterface};
+<span class="kw">use </span>sp_std::{vec, vec::Vec};
 <span class="comment">// `frame_benchmarking::benchmarks!` macro needs this
 </span><span class="kw">use </span>pallet_nomination_pools::Call;
 

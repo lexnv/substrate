@@ -2419,7 +2419,7 @@
 		verify <span class="macro-nonterminal">$postcode</span>:block
 		$( <span class="macro-nonterminal">$rest</span>:tt )*
 	) =&gt; {
-		<span class="macro-nonterminal">$</span><span class="macro">crate::paste::paste! </span>{
+		<span class="macro-nonterminal">$</span><span class="macro">crate::__private::paste::paste! </span>{
 			<span class="macro-nonterminal">$</span><span class="macro">crate::benchmarks_iter! </span>{
 				{ $(<span class="macro-nonterminal">$bench_module</span>, <span class="macro-nonterminal">$new_test_ext</span>, <span class="macro-nonterminal">$test </span>$(, $( <span class="macro-nonterminal">$args </span>)* )<span class="question-mark">?</span>)<span class="question-mark">? </span>}
 				{ $( <span class="macro-nonterminal">$instance</span>: <span class="macro-nonterminal">$instance_bound </span>)<span class="question-mark">? </span>}
@@ -2436,17 +2436,17 @@
 					</span>&gt;:: [&lt; new_call_variant_ <span class="macro-nonterminal">$dispatch </span>&gt;] (
 						$(<span class="macro-nonterminal">$arg</span>),*
 					);
-					<span class="kw">let </span>__benchmarked_call_encoded = <span class="macro-nonterminal">$crate::frame_support::__private::codec::Encode::encode</span>(
+					<span class="kw">let </span>__benchmarked_call_encoded = <span class="macro-nonterminal">$crate::__private::codec::Encode::encode</span>(
 						<span class="kw-2">&amp;</span>__call
 					);
 				}: {
 					<span class="kw">let </span>__call_decoded = &lt;
 						Call&lt;T $(, <span class="macro-nonterminal">$instance </span>)<span class="question-mark">?</span>&gt;
-						<span class="kw">as </span><span class="macro-nonterminal">$crate::frame_support::__private::codec::Decode
+						<span class="kw">as </span><span class="macro-nonterminal">$crate::__private::codec::Decode
 					</span>&gt;::decode(<span class="kw-2">&amp;mut &amp;</span>__benchmarked_call_encoded[..])
 						.expect(<span class="string">&quot;call is encoded above, encoding must be correct&quot;</span>);
 					<span class="kw">let </span>__origin = <span class="macro-nonterminal">$</span><span class="macro">crate::to_origin!</span>(<span class="macro-nonterminal">$origin </span>$(, <span class="macro-nonterminal">$origin_type</span>)<span class="question-mark">?</span>);
-					&lt;Call&lt;T $(, <span class="macro-nonterminal">$instance</span>)<span class="question-mark">? </span>&gt; <span class="kw">as </span><span class="macro-nonterminal">$crate::frame_support::traits::UnfilteredDispatchable
+					&lt;Call&lt;T $(, <span class="macro-nonterminal">$instance</span>)<span class="question-mark">? </span>&gt; <span class="kw">as </span><span class="macro-nonterminal">$crate::__private::traits::UnfilteredDispatchable
 						</span>&gt;::dispatch_bypass_filter(__call_decoded, __origin)<span class="question-mark">?</span>;
 				}
 				verify <span class="macro-nonterminal">$postcode
@@ -2766,8 +2766,8 @@
 			<span class="macro-nonterminal">$crate::BenchmarkingSetup</span>&lt;T $(, <span class="macro-nonterminal">$instance</span>)<span class="question-mark">? </span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$name
 			</span><span class="kw">where </span>$( <span class="macro-nonterminal">$where_clause </span>)*
 		{
-			<span class="kw">fn </span>components(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="macro-nonterminal">$crate::Vec</span>&lt;(<span class="macro-nonterminal">$crate::BenchmarkParameter</span>, u32, u32)&gt; {
-				<span class="macro-nonterminal">$</span><span class="macro">crate::vec! </span>[
+			<span class="kw">fn </span>components(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="macro-nonterminal">$crate::__private::Vec</span>&lt;(<span class="macro-nonterminal">$crate::BenchmarkParameter</span>, u32, u32)&gt; {
+				<span class="macro-nonterminal">$</span><span class="macro">crate::__private::vec! </span>[
 					$(
 						(<span class="macro-nonterminal">$crate::BenchmarkParameter</span>::<span class="macro-nonterminal">$param</span>, <span class="macro-nonterminal">$param_from</span>, <span class="macro-nonterminal">$param_to</span>)
 					),*
@@ -2778,7 +2778,7 @@
 				<span class="kw-2">&amp;</span><span class="self">self</span>,
 				components: <span class="kw-2">&amp;</span>[(<span class="macro-nonterminal">$crate::BenchmarkParameter</span>, u32)],
 				verify: bool
-			) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="macro-nonterminal">$crate::Box</span>&lt;<span class="kw">dyn </span>FnOnce() -&gt; <span class="prelude-ty">Result</span>&lt;(), <span class="macro-nonterminal">$crate::BenchmarkError</span>&gt;&gt;, <span class="macro-nonterminal">$crate::BenchmarkError</span>&gt; {
+			) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="macro-nonterminal">$crate::__private::Box</span>&lt;<span class="kw">dyn </span>FnOnce() -&gt; <span class="prelude-ty">Result</span>&lt;(), <span class="macro-nonterminal">$crate::BenchmarkError</span>&gt;&gt;, <span class="macro-nonterminal">$crate::BenchmarkError</span>&gt; {
 				$(
 					<span class="comment">// Prepare instance
 					</span><span class="kw">let </span><span class="macro-nonterminal">$param </span>= components.iter()
@@ -2792,7 +2792,7 @@
 				$( <span class="macro-nonterminal">$param_instancer </span>; )*
 				$( <span class="macro-nonterminal">$post </span>)*
 
-				<span class="prelude-val">Ok</span>(<span class="macro-nonterminal">$crate::Box::new</span>(<span class="kw">move </span>|| -&gt; <span class="prelude-ty">Result</span>&lt;(), <span class="macro-nonterminal">$crate::BenchmarkError</span>&gt; {
+				<span class="prelude-val">Ok</span>(<span class="macro-nonterminal">$crate::__private::Box::new</span>(<span class="kw">move </span>|| -&gt; <span class="prelude-ty">Result</span>&lt;(), <span class="macro-nonterminal">$crate::BenchmarkError</span>&gt; {
 					<span class="macro-nonterminal">$eval</span>;
 					<span class="kw">if </span>verify {
 						<span class="macro-nonterminal">$postcode</span>;
@@ -2832,15 +2832,15 @@
 		{ $( <span class="macro-nonterminal">$names_extra</span>:tt )* },
 		{ <span class="macro-nonterminal">$name</span>:ident }
 	) =&gt; {
-		<span class="macro-nonterminal">$</span><span class="macro">crate::paste::paste! </span>{
+		<span class="macro-nonterminal">$</span><span class="macro">crate::__private::paste::paste! </span>{
 			<span class="attr">#[<span class="macro-nonterminal">test</span>]
 			</span><span class="kw">fn </span>[&lt;bench_ <span class="macro-nonterminal">$name</span>&gt;] () {
 				<span class="macro-nonterminal">$new_test_exec</span>.<span class="macro-nonterminal">$exec_name</span>(|| {
 					<span class="comment">// Skip all #[extra] benchmarks if $extra is false.
 					</span><span class="kw">if </span>!(<span class="macro-nonterminal">$extra</span>) {
-						<span class="kw">let </span>disabled = <span class="macro-nonterminal">$</span><span class="macro">crate::vec!</span>[ $( <span class="macro">stringify!</span>(<span class="macro-nonterminal">$names_extra</span>).as_ref() ),* ];
+						<span class="kw">let </span>disabled = <span class="macro-nonterminal">$</span><span class="macro">crate::__private::vec!</span>[ $( <span class="macro">stringify!</span>(<span class="macro-nonterminal">$names_extra</span>).as_ref() ),* ];
 						<span class="kw">if </span>disabled.contains(<span class="kw-2">&amp;</span><span class="macro">stringify!</span>(<span class="macro-nonterminal">$name</span>)) {
-							<span class="macro-nonterminal">$</span><span class="macro">crate::log::error!</span>(
+							<span class="macro-nonterminal">$</span><span class="macro">crate::__private::log::error!</span>(
 								<span class="string">&quot;INFO: extra benchmark skipped - {}&quot;</span>,
 								<span class="macro">stringify!</span>(<span class="macro-nonterminal">$name</span>),
 							);
@@ -2863,21 +2863,21 @@
 								},
 								<span class="macro-nonterminal">$crate::BenchmarkError::Override</span>(<span class="kw">_</span>) =&gt; {
 									<span class="comment">// This is still considered a success condition.
-									</span><span class="macro-nonterminal">$</span><span class="macro">crate::log::error!</span>(
+									</span><span class="macro-nonterminal">$</span><span class="macro">crate::__private::log::error!</span>(
 										<span class="string">&quot;WARNING: benchmark error overrided - {}&quot;</span>,
 										<span class="macro">stringify!</span>(<span class="macro-nonterminal">$name</span>),
 									);
 								},
 								<span class="macro-nonterminal">$crate::BenchmarkError::Skip </span>=&gt; {
 									<span class="comment">// This is considered a success condition.
-									</span><span class="macro-nonterminal">$</span><span class="macro">crate::log::error!</span>(
+									</span><span class="macro-nonterminal">$</span><span class="macro">crate::__private::log::error!</span>(
 										<span class="string">&quot;WARNING: benchmark error skipped - {}&quot;</span>,
 										<span class="macro">stringify!</span>(<span class="macro-nonterminal">$name</span>),
 									);
 								},
 								<span class="macro-nonterminal">$crate::BenchmarkError::Weightless </span>=&gt; {
 									<span class="comment">// This is considered a success condition.
-									</span><span class="macro-nonterminal">$</span><span class="macro">crate::log::error!</span>(
+									</span><span class="macro-nonterminal">$</span><span class="macro">crate::__private::log::error!</span>(
 										<span class="string">&quot;WARNING: benchmark weightless skipped - {}&quot;</span>,
 										<span class="macro">stringify!</span>(<span class="macro-nonterminal">$name</span>),
 									);
@@ -2938,7 +2938,7 @@
 			<span class="macro-nonterminal">$crate::BenchmarkingSetup</span>&lt;T $(, <span class="macro-nonterminal">$instance </span>)<span class="question-mark">? </span>&gt; <span class="kw">for </span>SelectedBenchmark
 			<span class="kw">where </span>$( <span class="macro-nonterminal">$where_clause </span>)*
 		{
-			<span class="kw">fn </span>components(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="macro-nonterminal">$crate::Vec</span>&lt;(<span class="macro-nonterminal">$crate::BenchmarkParameter</span>, u32, u32)&gt; {
+			<span class="kw">fn </span>components(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="macro-nonterminal">$crate::__private::Vec</span>&lt;(<span class="macro-nonterminal">$crate::BenchmarkParameter</span>, u32, u32)&gt; {
 				<span class="kw">match </span><span class="self">self </span>{
 					$(
 						<span class="self">Self</span>::<span class="macro-nonterminal">$bench </span>=&gt; &lt;
@@ -2952,7 +2952,7 @@
 				<span class="kw-2">&amp;</span><span class="self">self</span>,
 				components: <span class="kw-2">&amp;</span>[(<span class="macro-nonterminal">$crate::BenchmarkParameter</span>, u32)],
 				verify: bool
-			) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="macro-nonterminal">$crate::Box</span>&lt;<span class="kw">dyn </span>FnOnce() -&gt; <span class="prelude-ty">Result</span>&lt;(), <span class="macro-nonterminal">$crate::BenchmarkError</span>&gt;&gt;, <span class="macro-nonterminal">$crate::BenchmarkError</span>&gt; {
+			) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="macro-nonterminal">$crate::__private::Box</span>&lt;<span class="kw">dyn </span>FnOnce() -&gt; <span class="prelude-ty">Result</span>&lt;(), <span class="macro-nonterminal">$crate::BenchmarkError</span>&gt;&gt;, <span class="macro-nonterminal">$crate::BenchmarkError</span>&gt; {
 				<span class="kw">match </span><span class="self">self </span>{
 					$(
 						<span class="self">Self</span>::<span class="macro-nonterminal">$bench </span>=&gt; &lt;
@@ -2982,19 +2982,19 @@
 			<span class="macro-nonterminal">$crate::Benchmarking </span><span class="kw">for </span>Pallet&lt;T $(, <span class="macro-nonterminal">$instance</span>)<span class="question-mark">? </span>&gt;
 			<span class="kw">where </span>T: frame_system::Config, $( <span class="macro-nonterminal">$where_clause </span>)*
 		{
-			<span class="kw">fn </span>benchmarks(extra: bool) -&gt; <span class="macro-nonterminal">$crate::Vec</span>&lt;<span class="macro-nonterminal">$crate::BenchmarkMetadata</span>&gt; {
+			<span class="kw">fn </span>benchmarks(extra: bool) -&gt; <span class="macro-nonterminal">$crate::__private::Vec</span>&lt;<span class="macro-nonterminal">$crate::BenchmarkMetadata</span>&gt; {
 				$(<span class="macro-nonterminal">$</span><span class="macro">crate::validate_pov_mode!</span>(
 					<span class="macro-nonterminal">$pov_name</span>: $( <span class="macro-nonterminal">$storage </span>= <span class="macro-nonterminal">$pov_mode </span>)<span class="kw-2">*</span>;
 				);)*
-				<span class="kw">let </span><span class="kw-2">mut </span>all_names = <span class="macro-nonterminal">$</span><span class="macro">crate::vec!</span>[ $( <span class="macro">stringify!</span>(<span class="macro-nonterminal">$name</span>).as_ref() ),* ];
+				<span class="kw">let </span><span class="kw-2">mut </span>all_names = <span class="macro-nonterminal">$</span><span class="macro">crate::__private::vec!</span>[ $( <span class="macro">stringify!</span>(<span class="macro-nonterminal">$name</span>).as_ref() ),* ];
 				<span class="kw">if </span>!extra {
 					<span class="kw">let </span>extra = [ $( <span class="macro">stringify!</span>(<span class="macro-nonterminal">$name_extra</span>).as_ref() ),* ];
 					all_names.retain(|x| !extra.contains(x));
 				}
-				<span class="kw">let </span>pov_modes: <span class="macro-nonterminal">$crate::Vec</span>&lt;(<span class="macro-nonterminal">$crate::Vec</span>&lt;u8&gt;, <span class="macro-nonterminal">$crate::Vec</span>&lt;(<span class="macro-nonterminal">$crate::Vec</span>&lt;u8&gt;, <span class="macro-nonterminal">$crate::Vec</span>&lt;u8&gt;)&gt;)&gt; = <span class="macro-nonterminal">$</span><span class="macro">crate::vec!</span>[
+				<span class="kw">let </span>pov_modes: <span class="macro-nonterminal">$crate::__private::Vec</span>&lt;(<span class="macro-nonterminal">$crate::__private::Vec</span>&lt;u8&gt;, <span class="macro-nonterminal">$crate::__private::Vec</span>&lt;(<span class="macro-nonterminal">$crate::__private::Vec</span>&lt;u8&gt;, <span class="macro-nonterminal">$crate::__private::Vec</span>&lt;u8&gt;)&gt;)&gt; = <span class="macro-nonterminal">$</span><span class="macro">crate::__private::vec!</span>[
 					$(
 						(<span class="macro">stringify!</span>(<span class="macro-nonterminal">$pov_name</span>).as_bytes().to_vec(),
-						<span class="macro-nonterminal">$</span><span class="macro">crate::vec!</span>[
+						<span class="macro-nonterminal">$</span><span class="macro">crate::__private::vec!</span>[
 							$( ( <span class="macro">stringify!</span>(<span class="macro-nonterminal">$storage</span>).as_bytes().to_vec(),
 								 <span class="macro">stringify!</span>(<span class="macro-nonterminal">$pov_mode</span>).as_bytes().to_vec() ), )*
 						]),
@@ -3015,18 +3015,18 @@
 						components,
 						pov_modes: pov_modes.iter().find(|p| p.<span class="number">0 </span>== name).map(|p| p.<span class="number">1</span>.clone()).unwrap_or_default(),
 					}
-				}).collect::&lt;<span class="macro-nonterminal">$crate::Vec</span>&lt;<span class="kw">_</span>&gt;&gt;()
+				}).collect::&lt;<span class="macro-nonterminal">$crate::__private::Vec</span>&lt;<span class="kw">_</span>&gt;&gt;()
 			}
 
 			<span class="kw">fn </span>run_benchmark(
 				extrinsic: <span class="kw-2">&amp;</span>[u8],
 				c: <span class="kw-2">&amp;</span>[(<span class="macro-nonterminal">$crate::BenchmarkParameter</span>, u32)],
-				whitelist: <span class="kw-2">&amp;</span>[<span class="macro-nonterminal">$crate::TrackedStorageKey</span>],
+				whitelist: <span class="kw-2">&amp;</span>[<span class="macro-nonterminal">$crate::__private::TrackedStorageKey</span>],
 				verify: bool,
 				internal_repeats: u32,
-			) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="macro-nonterminal">$crate::Vec</span>&lt;<span class="macro-nonterminal">$crate::BenchmarkResult</span>&gt;, <span class="macro-nonterminal">$crate::BenchmarkError</span>&gt; {
+			) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="macro-nonterminal">$crate::__private::Vec</span>&lt;<span class="macro-nonterminal">$crate::BenchmarkResult</span>&gt;, <span class="macro-nonterminal">$crate::BenchmarkError</span>&gt; {
 				<span class="comment">// Map the input to the selected benchmark.
-				</span><span class="kw">let </span>extrinsic = <span class="macro-nonterminal">$crate::str::from_utf8</span>(extrinsic)
+				</span><span class="kw">let </span>extrinsic = <span class="macro-nonterminal">$crate::__private::str::from_utf8</span>(extrinsic)
 					.map_err(|<span class="kw">_</span>| <span class="string">&quot;`extrinsic` is not a valid utf8 string!&quot;</span>)<span class="question-mark">?</span>;
 				<span class="kw">let </span>selected_benchmark = <span class="kw">match </span>extrinsic {
 					$( <span class="macro">stringify!</span>(<span class="macro-nonterminal">$name</span>) =&gt; SelectedBenchmark::<span class="macro-nonterminal">$name</span>, )*
@@ -3036,34 +3036,34 @@
 				<span class="comment">// Add whitelist to DB including whitelisted caller
 				</span><span class="kw">let </span><span class="kw-2">mut </span>whitelist = whitelist.to_vec();
 				<span class="kw">let </span>whitelisted_caller_key =
-					&lt;frame_system::Account::&lt;T&gt; <span class="kw">as </span><span class="macro-nonterminal">$crate::frame_support::storage::StorageMap</span>&lt;<span class="kw">_</span>,<span class="kw">_</span>&gt;&gt;::hashed_key_for(
+					&lt;frame_system::Account::&lt;T&gt; <span class="kw">as </span><span class="macro-nonterminal">$crate::__private::storage::StorageMap</span>&lt;<span class="kw">_</span>,<span class="kw">_</span>&gt;&gt;::hashed_key_for(
 						<span class="macro-nonterminal">$crate::whitelisted_caller</span>::&lt;T::AccountId&gt;()
 					);
 				whitelist.push(whitelisted_caller_key.into());
 				<span class="comment">// Whitelist the transactional layer.
-				</span><span class="kw">let </span>transactional_layer_key = <span class="macro-nonterminal">$crate::TrackedStorageKey::new</span>(
-					<span class="macro-nonterminal">$crate::frame_support::storage::transactional::TRANSACTION_LEVEL_KEY</span>.into()
+				</span><span class="kw">let </span>transactional_layer_key = <span class="macro-nonterminal">$crate::__private::TrackedStorageKey::new</span>(
+					<span class="macro-nonterminal">$crate::__private::storage::transactional::TRANSACTION_LEVEL_KEY</span>.into()
 				);
 				whitelist.push(transactional_layer_key);
 				<span class="comment">// Whitelist the `:extrinsic_index`.
-				</span><span class="kw">let </span>extrinsic_index = <span class="macro-nonterminal">$crate::TrackedStorageKey::new</span>(
-					<span class="macro-nonterminal">$crate::well_known_keys::EXTRINSIC_INDEX</span>.into()
+				</span><span class="kw">let </span>extrinsic_index = <span class="macro-nonterminal">$crate::__private::TrackedStorageKey::new</span>(
+					<span class="macro-nonterminal">$crate::__private::well_known_keys::EXTRINSIC_INDEX</span>.into()
 				);
 				whitelist.push(extrinsic_index);
 				<span class="comment">// Whitelist the `:intrablock_entropy`.
-				</span><span class="kw">let </span>intrablock_entropy = <span class="macro-nonterminal">$crate::TrackedStorageKey::new</span>(
-					<span class="macro-nonterminal">$crate::well_known_keys::INTRABLOCK_ENTROPY</span>.into()
+				</span><span class="kw">let </span>intrablock_entropy = <span class="macro-nonterminal">$crate::__private::TrackedStorageKey::new</span>(
+					<span class="macro-nonterminal">$crate::__private::well_known_keys::INTRABLOCK_ENTROPY</span>.into()
 				);
 				whitelist.push(intrablock_entropy);
 
 				<span class="macro-nonterminal">$crate::benchmarking::set_whitelist</span>(whitelist.clone());
 
-				<span class="kw">let </span><span class="kw-2">mut </span>results: <span class="macro-nonterminal">$crate::Vec</span>&lt;<span class="macro-nonterminal">$crate::BenchmarkResult</span>&gt; = <span class="macro-nonterminal">$crate::Vec::new</span>();
+				<span class="kw">let </span><span class="kw-2">mut </span>results: <span class="macro-nonterminal">$crate::__private::Vec</span>&lt;<span class="macro-nonterminal">$crate::BenchmarkResult</span>&gt; = <span class="macro-nonterminal">$crate::__private::Vec::new</span>();
 
 				<span class="comment">// Always do at least one internal repeat...
 				</span><span class="kw">for _ in </span><span class="number">0 </span>.. internal_repeats.max(<span class="number">1</span>) {
 					<span class="comment">// Always reset the state after the benchmark.
-					</span><span class="macro-nonterminal">$</span><span class="macro">crate::defer!</span>(<span class="macro-nonterminal">$crate::benchmarking::wipe_db</span>());
+					</span><span class="macro-nonterminal">$</span><span class="macro">crate::__private::defer!</span>(<span class="macro-nonterminal">$crate::benchmarking::wipe_db</span>());
 
 					<span class="comment">// Set up the externalities environment for the setup we want to
 					// benchmark.
@@ -3072,7 +3072,7 @@
 					&gt;::instance(<span class="kw-2">&amp;</span>selected_benchmark, c, verify)<span class="question-mark">?</span>;
 
 					<span class="comment">// Set the block number to at least 1 so events are deposited.
-					</span><span class="kw">if </span><span class="macro-nonterminal">$crate::Zero::is_zero</span>(<span class="kw-2">&amp;</span>frame_system::Pallet::&lt;T&gt;::block_number()) {
+					</span><span class="kw">if </span><span class="macro-nonterminal">$crate::__private::Zero::is_zero</span>(<span class="kw-2">&amp;</span>frame_system::Pallet::&lt;T&gt;::block_number()) {
 						frame_system::Pallet::&lt;T&gt;::set_block_number(<span class="number">1u32</span>.into());
 					}
 
@@ -3083,14 +3083,14 @@
 					<span class="comment">// Access all whitelisted keys to get them into the proof recorder since the
 					// recorder does now have a whitelist.
 					</span><span class="kw">for </span>key <span class="kw">in </span><span class="kw-2">&amp;</span>whitelist {
-						<span class="macro-nonterminal">$crate::frame_support::storage::unhashed::get_raw</span>(<span class="kw-2">&amp;</span>key.key);
+						<span class="macro-nonterminal">$crate::__private::storage::unhashed::get_raw</span>(<span class="kw-2">&amp;</span>key.key);
 					}
 
 					<span class="comment">// Reset the read/write counter so we don&#39;t count operations in the setup process.
 					</span><span class="macro-nonterminal">$crate::benchmarking::reset_read_write_count</span>();
 
 					<span class="comment">// Time the extrinsic logic.
-					</span><span class="macro-nonterminal">$</span><span class="macro">crate::log::trace!</span>(
+					</span><span class="macro-nonterminal">$</span><span class="macro">crate::__private::log::trace!</span>(
 						<span class="macro-nonterminal">target</span>: <span class="string">&quot;benchmark&quot;</span>,
 						<span class="string">&quot;Start Benchmark: {} ({:?}) verify {}&quot;</span>,
 						extrinsic,
@@ -3115,29 +3115,29 @@
 
 					<span class="comment">// Commit the changes to get proper write count
 					</span><span class="macro-nonterminal">$crate::benchmarking::commit_db</span>();
-					<span class="macro-nonterminal">$</span><span class="macro">crate::log::trace!</span>(
+					<span class="macro-nonterminal">$</span><span class="macro">crate::__private::log::trace!</span>(
 						<span class="macro-nonterminal">target</span>: <span class="string">&quot;benchmark&quot;</span>,
 						<span class="string">&quot;End Benchmark: {} ns&quot;</span>, elapsed_extrinsic
 					);
 					<span class="kw">let </span>read_write_count = <span class="macro-nonterminal">$crate::benchmarking::read_write_count</span>();
-					<span class="macro-nonterminal">$</span><span class="macro">crate::log::trace!</span>(
+					<span class="macro-nonterminal">$</span><span class="macro">crate::__private::log::trace!</span>(
 						<span class="macro-nonterminal">target</span>: <span class="string">&quot;benchmark&quot;</span>,
 						<span class="string">&quot;Read/Write Count {:?}&quot;</span>, read_write_count
 					);
-					<span class="macro-nonterminal">$</span><span class="macro">crate::log::trace!</span>(
+					<span class="macro-nonterminal">$</span><span class="macro">crate::__private::log::trace!</span>(
 						<span class="macro-nonterminal">target</span>: <span class="string">&quot;benchmark&quot;</span>,
 						<span class="string">&quot;Proof sizes: before {:?} after {:?} diff {}&quot;</span>, <span class="kw-2">&amp;</span>start_pov, <span class="kw-2">&amp;</span>end_pov, <span class="kw-2">&amp;</span>diff_pov
 					);
 
 					<span class="comment">// Time the storage root recalculation.
 					</span><span class="kw">let </span>start_storage_root = <span class="macro-nonterminal">$crate::benchmarking::current_time</span>();
-					<span class="macro-nonterminal">$crate::storage_root</span>(<span class="macro-nonterminal">$crate::StateVersion::V1</span>);
+					<span class="macro-nonterminal">$crate::__private::storage_root</span>(<span class="macro-nonterminal">$crate::__private::StateVersion::V1</span>);
 					<span class="kw">let </span>finish_storage_root = <span class="macro-nonterminal">$crate::benchmarking::current_time</span>();
 					<span class="kw">let </span>elapsed_storage_root = finish_storage_root - start_storage_root;
 
 					<span class="kw">let </span>skip_meta = [ $( <span class="macro">stringify!</span>(<span class="macro-nonterminal">$name_skip_meta</span>).as_ref() ),* ];
 					<span class="kw">let </span>read_and_written_keys = <span class="kw">if </span>skip_meta.contains(<span class="kw-2">&amp;</span>extrinsic) {
-						<span class="macro-nonterminal">$</span><span class="macro">crate::vec!</span>[(<span class="string">b&quot;Skipped Metadata&quot;</span>.<span class="macro-nonterminal">to_vec</span>(), <span class="number">0</span>, <span class="number">0</span>, <span class="bool-val">false</span>)]
+						<span class="macro-nonterminal">$</span><span class="macro">crate::__private::vec!</span>[(<span class="string">b&quot;Skipped Metadata&quot;</span>.<span class="macro-nonterminal">to_vec</span>(), <span class="number">0</span>, <span class="number">0</span>, <span class="bool-val">false</span>)]
 					} <span class="kw">else </span>{
 						<span class="macro-nonterminal">$crate::benchmarking::get_read_and_written_keys</span>()
 					};
@@ -3175,11 +3175,11 @@
 			/// author chooses not to implement benchmarks.
 			</span><span class="attr">#[allow(unused)]
 			</span><span class="kw">fn </span>test_bench_by_name(name: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;(), <span class="macro-nonterminal">$crate::BenchmarkError</span>&gt; {
-				<span class="kw">let </span>name = <span class="macro-nonterminal">$crate::str::from_utf8</span>(name)
+				<span class="kw">let </span>name = <span class="macro-nonterminal">$crate::__private::str::from_utf8</span>(name)
 					.map_err(|<span class="kw">_</span>| -&gt; <span class="macro-nonterminal">$crate::BenchmarkError </span>{ <span class="string">&quot;`name` is not a valid utf8 string!&quot;</span>.into() })<span class="question-mark">?</span>;
 				<span class="kw">match </span>name {
 					$( <span class="macro">stringify!</span>(<span class="macro-nonterminal">$name</span>) =&gt; {
-						<span class="macro-nonterminal">$</span><span class="macro">crate::paste::paste! </span>{ <span class="macro-nonterminal">Self</span>::[&lt; test_benchmark_ <span class="macro-nonterminal">$name </span>&gt;]() }
+						<span class="macro-nonterminal">$</span><span class="macro">crate::__private::paste::paste! </span>{ <span class="macro-nonterminal">Self</span>::[&lt; test_benchmark_ <span class="macro-nonterminal">$name </span>&gt;]() }
 					} )*
 					<span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(<span class="string">&quot;Could not find test for requested benchmark.&quot;</span>.into()),
 				}
@@ -3201,7 +3201,7 @@
 		{ $( <span class="macro-nonterminal">$instance</span>:ident: <span class="macro-nonterminal">$instance_bound</span>:tt )<span class="question-mark">? </span>}
 		<span class="macro-nonterminal">$name</span>:ident
 	) =&gt; {
-		<span class="macro-nonterminal">$</span><span class="macro">crate::paste::item! </span>{
+		<span class="macro-nonterminal">$</span><span class="macro">crate::__private::paste::item! </span>{
 			<span class="attr">#[<span class="macro-nonterminal">cfg</span>(test)]
 			</span><span class="kw">impl</span>&lt;T: Config $(&lt;<span class="macro-nonterminal">$instance</span>&gt;, <span class="macro-nonterminal">$instance</span>: <span class="macro-nonterminal">$instance_bound </span>)<span class="question-mark">? </span>&gt;
 				Pallet&lt;T $(, <span class="macro-nonterminal">$instance</span>)<span class="question-mark">? </span>&gt;
@@ -3215,10 +3215,10 @@
 					&gt;::components(<span class="kw-2">&amp;</span>selected_benchmark);
 
 					<span class="kw">let </span>execute_benchmark = |
-						c: <span class="macro-nonterminal">$crate::Vec</span>&lt;(<span class="macro-nonterminal">$crate::BenchmarkParameter</span>, u32)&gt;
+						c: <span class="macro-nonterminal">$crate::__private::Vec</span>&lt;(<span class="macro-nonterminal">$crate::BenchmarkParameter</span>, u32)&gt;
 					| -&gt; <span class="prelude-ty">Result</span>&lt;(), <span class="macro-nonterminal">$crate::BenchmarkError</span>&gt; {
 						<span class="comment">// Always reset the state after the benchmark.
-						</span><span class="macro-nonterminal">$</span><span class="macro">crate::defer!</span>(<span class="macro-nonterminal">$crate::benchmarking::wipe_db</span>());
+						</span><span class="macro-nonterminal">$</span><span class="macro">crate::__private::defer!</span>(<span class="macro-nonterminal">$crate::benchmarking::wipe_db</span>());
 
 						<span class="comment">// Set up the benchmark, return execution + verification function.
 						</span><span class="kw">let </span>closure_to_verify = &lt;
@@ -3226,7 +3226,7 @@
 						&gt;::instance(<span class="kw-2">&amp;</span>selected_benchmark, <span class="kw-2">&amp;</span>c, <span class="bool-val">true</span>)<span class="question-mark">?</span>;
 
 						<span class="comment">// Set the block number to at least 1 so events are deposited.
-						</span><span class="kw">if </span><span class="macro-nonterminal">$crate::Zero::is_zero</span>(<span class="kw-2">&amp;</span>frame_system::Pallet::&lt;T&gt;::block_number()) {
+						</span><span class="kw">if </span><span class="macro-nonterminal">$crate::__private::Zero::is_zero</span>(<span class="kw-2">&amp;</span>frame_system::Pallet::&lt;T&gt;::block_number()) {
 							frame_system::Pallet::&lt;T&gt;::set_block_number(<span class="number">1u32</span>.into());
 						}
 
@@ -3256,7 +3256,7 @@
 							// and up to num_values-2 more equidistant values in between.
 							// For 0..10 and num_values=6 this would mean: [0, 2, 4, 6, 8, 10]
 
-							</span><span class="kw">let </span><span class="kw-2">mut </span>values = <span class="macro-nonterminal">$</span><span class="macro">crate::vec!</span>[<span class="macro-nonterminal">low</span>];
+							</span><span class="kw">let </span><span class="kw-2">mut </span>values = <span class="macro-nonterminal">$</span><span class="macro">crate::__private::vec!</span>[<span class="macro-nonterminal">low</span>];
 							<span class="kw">let </span>diff = (high - low).min(num_values - <span class="number">1</span>);
 							<span class="kw">let </span>slope = (high - low) <span class="kw">as </span>f32 / diff <span class="kw">as </span>f32;
 
@@ -3268,7 +3268,7 @@
 
 							<span class="kw">for </span>component_value <span class="kw">in </span>values {
 								<span class="comment">// Select the max value for all the other components.
-								</span><span class="kw">let </span>c: <span class="macro-nonterminal">$crate::Vec</span>&lt;(<span class="macro-nonterminal">$crate::BenchmarkParameter</span>, u32)&gt; = components
+								</span><span class="kw">let </span>c: <span class="macro-nonterminal">$crate::__private::Vec</span>&lt;(<span class="macro-nonterminal">$crate::BenchmarkParameter</span>, u32)&gt; = components
 									.iter()
 									.map(|(n, <span class="kw">_</span>, h)|
 										<span class="kw">if </span><span class="kw-2">*</span>n == name {
@@ -3674,7 +3674,7 @@
 							<span class="prelude-val">Err</span>(err) =&gt; {
 								<span class="macro">println!</span>(
 									<span class="string">&quot;{}: {:?}&quot;</span>,
-									<span class="macro-nonterminal">$crate::str::from_utf8</span>(benchmark_name)
+									<span class="macro-nonterminal">$crate::__private::str::from_utf8</span>(benchmark_name)
 										.expect(<span class="string">&quot;benchmark name is always a valid string!&quot;</span>),
 									err,
 								);
@@ -3685,7 +3685,7 @@
 									<span class="macro-nonterminal">$crate::BenchmarkError::Stop</span>(err) =&gt; {
 										<span class="macro">println!</span>(
 											<span class="string">&quot;{}: {:?}&quot;</span>,
-											<span class="macro-nonterminal">$crate::str::from_utf8</span>(benchmark_name)
+											<span class="macro-nonterminal">$crate::__private::str::from_utf8</span>(benchmark_name)
 												.expect(<span class="string">&quot;benchmark name is always a valid string!&quot;</span>),
 											err,
 										);
@@ -3693,25 +3693,25 @@
 									},
 									<span class="macro-nonterminal">$crate::BenchmarkError::Override</span>(<span class="kw">_</span>) =&gt; {
 										<span class="comment">// This is still considered a success condition.
-										</span><span class="macro-nonterminal">$</span><span class="macro">crate::log::error!</span>(
+										</span><span class="macro-nonterminal">$</span><span class="macro">crate::__private::log::error!</span>(
 											<span class="string">&quot;WARNING: benchmark error overrided - {}&quot;</span>,
-												<span class="macro-nonterminal">$crate::str::from_utf8</span>(benchmark_name)
+												<span class="macro-nonterminal">$crate::__private::str::from_utf8</span>(benchmark_name)
 													.expect(<span class="string">&quot;benchmark name is always a valid string!&quot;</span>),
 											);
 									},
 									<span class="macro-nonterminal">$crate::BenchmarkError::Skip </span>=&gt; {
 										<span class="comment">// This is considered a success condition.
-										</span><span class="macro-nonterminal">$</span><span class="macro">crate::log::error!</span>(
+										</span><span class="macro-nonterminal">$</span><span class="macro">crate::__private::log::error!</span>(
 											<span class="string">&quot;WARNING: benchmark error skipped - {}&quot;</span>,
-											<span class="macro-nonterminal">$crate::str::from_utf8</span>(benchmark_name)
+											<span class="macro-nonterminal">$crate::__private::str::from_utf8</span>(benchmark_name)
 												.expect(<span class="string">&quot;benchmark name is always a valid string!&quot;</span>),
 										);
 									}
 									<span class="macro-nonterminal">$crate::BenchmarkError::Weightless </span>=&gt; {
 										<span class="comment">// This is considered a success condition.
-										</span><span class="macro-nonterminal">$</span><span class="macro">crate::log::error!</span>(
+										</span><span class="macro-nonterminal">$</span><span class="macro">crate::__private::log::error!</span>(
 											<span class="string">&quot;WARNING: benchmark weightless skipped - {}&quot;</span>,
-											<span class="macro-nonterminal">$crate::str::from_utf8</span>(benchmark_name)
+											<span class="macro-nonterminal">$crate::__private::str::from_utf8</span>(benchmark_name)
 												.expect(<span class="string">&quot;benchmark name is always a valid string!&quot;</span>),
 										);
 									}
@@ -3767,7 +3767,7 @@
 /// For values that should be skipped entirely, we can just pass `key.into()`. For example:
 ///
 /// ```
-/// use frame_benchmarking::TrackedStorageKey;
+/// use sp_storage::TrackedStorageKey;
 /// let whitelist: Vec&lt;TrackedStorageKey&gt; = vec![
 /// 	// Block Number
 /// 	array_bytes::hex_into_unchecked(&quot;26aa394eea5630e07c48ae0c9558cef702a5c1b19ab7a04f536c519aca4983ac&quot;),
@@ -3840,13 +3840,13 @@
 				<span class="prelude-val">Ok</span>(results) =&gt; <span class="prelude-val">Some</span>(results),
 				<span class="prelude-val">Err</span>(<span class="macro-nonterminal">$crate::BenchmarkError::Override</span>(<span class="kw-2">mut </span>result)) =&gt; {
 					<span class="comment">// Insert override warning as the first storage key.
-					</span><span class="macro-nonterminal">$</span><span class="macro">crate::log::error!</span>(
+					</span><span class="macro-nonterminal">$</span><span class="macro">crate::__private::log::error!</span>(
 						<span class="string">&quot;WARNING: benchmark error overrided - {}&quot;</span>,
-						<span class="macro-nonterminal">$crate::str::from_utf8</span>(benchmark)
+						<span class="macro-nonterminal">$crate::__private::str::from_utf8</span>(benchmark)
 							.expect(<span class="string">&quot;benchmark name is always a valid string!&quot;</span>)
 					);
 					result.keys.insert(<span class="number">0</span>, (<span class="string">b&quot;Benchmark Override&quot;</span>.to_vec(), <span class="number">0</span>, <span class="number">0</span>, <span class="bool-val">false</span>));
-					<span class="prelude-val">Some</span>(<span class="macro-nonterminal">$</span><span class="macro">crate::vec!</span>[<span class="macro-nonterminal">result</span>])
+					<span class="prelude-val">Some</span>(<span class="macro-nonterminal">$</span><span class="macro">crate::__private::vec!</span>[<span class="macro-nonterminal">result</span>])
 				},
 				<span class="prelude-val">Err</span>(<span class="macro-nonterminal">$crate::BenchmarkError::Stop</span>(e)) =&gt; {
 					<span class="macro-nonterminal">$crate::show_benchmark_debug_info</span>(
@@ -3859,20 +3859,20 @@
 					<span class="kw">return </span><span class="prelude-val">Err</span>(e.into())
 				},
 				<span class="prelude-val">Err</span>(<span class="macro-nonterminal">$crate::BenchmarkError::Skip</span>) =&gt; {
-					<span class="macro-nonterminal">$</span><span class="macro">crate::log::error!</span>(
+					<span class="macro-nonterminal">$</span><span class="macro">crate::__private::log::error!</span>(
 						<span class="string">&quot;WARNING: benchmark error skipped - {}&quot;</span>,
-						<span class="macro-nonterminal">$crate::str::from_utf8</span>(benchmark)
+						<span class="macro-nonterminal">$crate::__private::str::from_utf8</span>(benchmark)
 							.expect(<span class="string">&quot;benchmark name is always a valid string!&quot;</span>)
 					);
 					<span class="prelude-val">None
 				</span>},
 				<span class="prelude-val">Err</span>(<span class="macro-nonterminal">$crate::BenchmarkError::Weightless</span>) =&gt; {
-					<span class="macro-nonterminal">$</span><span class="macro">crate::log::error!</span>(
+					<span class="macro-nonterminal">$</span><span class="macro">crate::__private::log::error!</span>(
 						<span class="string">&quot;WARNING: benchmark weightless skipped - {}&quot;</span>,
-						<span class="macro-nonterminal">$crate::str::from_utf8</span>(benchmark)
+						<span class="macro-nonterminal">$crate::__private::str::from_utf8</span>(benchmark)
 							.expect(<span class="string">&quot;benchmark name is always a valid string!&quot;</span>)
 					);
-					<span class="prelude-val">Some</span>(<span class="macro">vec!</span>[<span class="macro-nonterminal">$crate::BenchmarkResult </span>{
+					<span class="prelude-val">Some</span>(<span class="macro-nonterminal">$</span><span class="macro">crate::__private::vec!</span>[<span class="macro-nonterminal">$crate::BenchmarkResult </span>{
 						components: selected_components.clone(),
 						..Default::default()
 					}])

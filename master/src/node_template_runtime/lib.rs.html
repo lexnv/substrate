@@ -1105,8 +1105,8 @@
 		<span class="kw">fn </span>dispatch_benchmark(
 			config: frame_benchmarking::BenchmarkConfig
 		) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;frame_benchmarking::BenchmarkBatch&gt;, sp_runtime::RuntimeString&gt; {
-			<span class="kw">use </span>frame_benchmarking::{baseline, Benchmarking, BenchmarkBatch, TrackedStorageKey};
-
+			<span class="kw">use </span>frame_benchmarking::{baseline, Benchmarking, BenchmarkBatch};
+			<span class="kw">use </span>sp_storage::TrackedStorageKey;
 			<span class="kw">use </span>frame_system_benchmarking::Pallet <span class="kw">as </span>SystemBench;
 			<span class="kw">use </span>baseline::Pallet <span class="kw">as </span>BaselineBench;
 

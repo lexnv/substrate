@@ -1017,7 +1017,6 @@
 <a href="#1017" id="1017">1017</a>
 <a href="#1018" id="1018">1018</a>
 <a href="#1019" id="1019">1019</a>
-<a href="#1020" id="1020">1020</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1439,7 +1438,6 @@
 	};
 
 	<span class="kw">let </span>krate = generate_crate_access_2018(<span class="string">&quot;frame-benchmarking&quot;</span>)<span class="question-mark">?</span>;
-	<span class="kw">let </span>support = <span class="macro">quote!</span>(#krate::frame_support);
 
 	<span class="comment">// benchmark name variables
 	</span><span class="kw">let </span>benchmark_names_str: Vec&lt;String&gt; = benchmark_names.iter().map(|n| n.to_string()).collect();
@@ -1476,7 +1474,7 @@
 			}
 
 			<span class="kw">impl</span>&lt;#type_impl_generics&gt; #krate::BenchmarkingSetup&lt;#type_use_generics&gt; <span class="kw">for </span>SelectedBenchmark <span class="kw">where </span>#where_clause {
-				<span class="kw">fn </span>components(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; #krate::Vec&lt;(#krate::BenchmarkParameter, u32, u32)&gt; {
+				<span class="kw">fn </span>components(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; #krate::__private::Vec&lt;(#krate::BenchmarkParameter, u32, u32)&gt; {
 					<span class="kw">match </span><span class="self">self </span>{
 						#(
 							<span class="self">Self</span>::#benchmark_names =&gt; {
@@ -1492,7 +1490,7 @@
 					components: <span class="kw-2">&amp;</span>[(#krate::BenchmarkParameter, u32)],
 					verify: bool,
 				) -&gt; <span class="prelude-ty">Result</span>&lt;
-					#krate::Box&lt;<span class="kw">dyn </span>FnOnce() -&gt; <span class="prelude-ty">Result</span>&lt;(), #krate::BenchmarkError&gt;&gt;,
+					#krate::__private::Box&lt;<span class="kw">dyn </span>FnOnce() -&gt; <span class="prelude-ty">Result</span>&lt;(), #krate::BenchmarkError&gt;&gt;,
 					#krate::BenchmarkError,
 				&gt; {
 					<span class="kw">match </span><span class="self">self </span>{
@@ -1513,8 +1511,8 @@
 			{
 				<span class="kw">fn </span>benchmarks(
 					extra: bool,
-				) -&gt; #krate::Vec&lt;#krate::BenchmarkMetadata&gt; {
-					<span class="kw">let </span><span class="kw-2">mut </span>all_names = #<span class="macro">krate::vec!</span>[
+				) -&gt; #krate::__private::Vec&lt;#krate::BenchmarkMetadata&gt; {
+					<span class="kw">let </span><span class="kw-2">mut </span>all_names = #<span class="macro">krate::__private::vec!</span>[
 						#(#benchmark_names_str),
 						*
 					];
@@ -1539,17 +1537,17 @@
 							// https://github.com/paritytech/substrate/issues/13132
 							</span>pov_modes: <span class="macro">vec!</span>[],
 						}
-					}).collect::&lt;#krate::Vec&lt;<span class="kw">_</span>&gt;&gt;()
+					}).collect::&lt;#krate::__private::Vec&lt;<span class="kw">_</span>&gt;&gt;()
 				}
 
 				<span class="kw">fn </span>run_benchmark(
 					extrinsic: <span class="kw-2">&amp;</span>[u8],
 					c: <span class="kw-2">&amp;</span>[(#krate::BenchmarkParameter, u32)],
-					whitelist: <span class="kw-2">&amp;</span>[#krate::TrackedStorageKey],
+					whitelist: <span class="kw-2">&amp;</span>[#krate::__private::TrackedStorageKey],
 					verify: bool,
 					internal_repeats: u32,
-				) -&gt; <span class="prelude-ty">Result</span>&lt;#krate::Vec&lt;#krate::BenchmarkResult&gt;, #krate::BenchmarkError&gt; {
-					<span class="kw">let </span>extrinsic = #krate::str::from_utf8(extrinsic).map_err(|<span class="kw">_</span>| <span class="string">&quot;`extrinsic` is not a valid utf-8 string!&quot;</span>)<span class="question-mark">?</span>;
+				) -&gt; <span class="prelude-ty">Result</span>&lt;#krate::__private::Vec&lt;#krate::BenchmarkResult&gt;, #krate::BenchmarkError&gt; {
+					<span class="kw">let </span>extrinsic = #krate::__private::str::from_utf8(extrinsic).map_err(|<span class="kw">_</span>| <span class="string">&quot;`extrinsic` is not a valid utf-8 string!&quot;</span>)<span class="question-mark">?</span>;
 					<span class="kw">let </span>selected_benchmark = <span class="kw">match </span>extrinsic {
 						#(#selected_benchmark_mappings),
 						<span class="kw-2">*</span>,
@@ -1558,32 +1556,32 @@
 					<span class="kw">let </span><span class="kw-2">mut </span>whitelist = whitelist.to_vec();
 					<span class="kw">let </span>whitelisted_caller_key = &lt;frame_system::Account&lt;
 						T,
-					&gt; <span class="kw">as </span>#support::storage::StorageMap&lt;<span class="kw">_</span>, <span class="kw">_</span>,&gt;&gt;::hashed_key_for(
+					&gt; <span class="kw">as </span>#krate::__private::storage::StorageMap&lt;<span class="kw">_</span>, <span class="kw">_</span>,&gt;&gt;::hashed_key_for(
 						#krate::whitelisted_caller::&lt;T::AccountId&gt;()
 					);
 					whitelist.push(whitelisted_caller_key.into());
-					<span class="kw">let </span>transactional_layer_key = #krate::TrackedStorageKey::new(
-						#support::storage::transactional::TRANSACTION_LEVEL_KEY.into(),
+					<span class="kw">let </span>transactional_layer_key = #krate::__private::TrackedStorageKey::new(
+						#krate::__private::storage::transactional::TRANSACTION_LEVEL_KEY.into(),
 					);
 					whitelist.push(transactional_layer_key);
 					<span class="comment">// Whitelist the `:extrinsic_index`.
-					</span><span class="kw">let </span>extrinsic_index = #krate::TrackedStorageKey::new(
-						#krate::well_known_keys::EXTRINSIC_INDEX.into()
+					</span><span class="kw">let </span>extrinsic_index = #krate::__private::TrackedStorageKey::new(
+						#krate::__private::well_known_keys::EXTRINSIC_INDEX.into()
 					);
 					whitelist.push(extrinsic_index);
 					<span class="comment">// Whitelist the `:intrablock_entropy`.
-					</span><span class="kw">let </span>intrablock_entropy = #krate::TrackedStorageKey::new(
-						#krate::well_known_keys::INTRABLOCK_ENTROPY.into()
+					</span><span class="kw">let </span>intrablock_entropy = #krate::__private::TrackedStorageKey::new(
+						#krate::__private::well_known_keys::INTRABLOCK_ENTROPY.into()
 					);
 					whitelist.push(intrablock_entropy);
 
 					#krate::benchmarking::set_whitelist(whitelist.clone());
-					<span class="kw">let </span><span class="kw-2">mut </span>results: #krate::Vec&lt;#krate::BenchmarkResult&gt; = #krate::Vec::new();
+					<span class="kw">let </span><span class="kw-2">mut </span>results: #krate::__private::Vec&lt;#krate::BenchmarkResult&gt; = #krate::__private::Vec::new();
 
 					<span class="comment">// Always do at least one internal repeat...
 					</span><span class="kw">for _ in </span><span class="number">0 </span>.. internal_repeats.max(<span class="number">1</span>) {
 						<span class="comment">// Always reset the state after the benchmark.
-						</span>#<span class="macro">krate::defer!</span>(#krate::benchmarking::wipe_db());
+						</span>#<span class="macro">krate::__private::defer!</span>(#krate::benchmarking::wipe_db());
 
 						<span class="comment">// Set up the externalities environment for the setup we want to
 						// benchmark.
@@ -1592,7 +1590,7 @@
 						&gt;::instance(<span class="kw-2">&amp;</span>selected_benchmark, c, verify)<span class="question-mark">?</span>;
 
 						<span class="comment">// Set the block number to at least 1 so events are deposited.
-						</span><span class="kw">if </span>#krate::Zero::is_zero(<span class="kw-2">&amp;</span>frame_system::Pallet::&lt;T&gt;::block_number()) {
+						</span><span class="kw">if </span>#krate::__private::Zero::is_zero(<span class="kw-2">&amp;</span>frame_system::Pallet::&lt;T&gt;::block_number()) {
 							frame_system::Pallet::&lt;T&gt;::set_block_number(<span class="number">1u32</span>.into());
 						}
 
@@ -1603,14 +1601,14 @@
 						<span class="comment">// Access all whitelisted keys to get them into the proof recorder since the
 						// recorder does now have a whitelist.
 						</span><span class="kw">for </span>key <span class="kw">in </span><span class="kw-2">&amp;</span>whitelist {
-							#krate::frame_support::storage::unhashed::get_raw(<span class="kw-2">&amp;</span>key.key);
+							#krate::__private::storage::unhashed::get_raw(<span class="kw-2">&amp;</span>key.key);
 						}
 
 						<span class="comment">// Reset the read/write counter so we don&#39;t count operations in the setup process.
 						</span>#krate::benchmarking::reset_read_write_count();
 
 						<span class="comment">// Time the extrinsic logic.
-						</span>#<span class="macro">krate::log::trace!</span>(
+						</span>#<span class="macro">krate::__private::log::trace!</span>(
 							target: <span class="string">&quot;benchmark&quot;</span>,
 							<span class="string">&quot;Start Benchmark: {} ({:?})&quot;</span>,
 							extrinsic,
@@ -1634,25 +1632,25 @@
 
 						<span class="comment">// Commit the changes to get proper write count
 						</span>#krate::benchmarking::commit_db();
-						#<span class="macro">krate::log::trace!</span>(
+						#<span class="macro">krate::__private::log::trace!</span>(
 							target: <span class="string">&quot;benchmark&quot;</span>,
 							<span class="string">&quot;End Benchmark: {} ns&quot;</span>, elapsed_extrinsic
 						);
 						<span class="kw">let </span>read_write_count = #krate::benchmarking::read_write_count();
-						#<span class="macro">krate::log::trace!</span>(
+						#<span class="macro">krate::__private::log::trace!</span>(
 							target: <span class="string">&quot;benchmark&quot;</span>,
 							<span class="string">&quot;Read/Write Count {:?}&quot;</span>, read_write_count
 						);
 
 						<span class="comment">// Time the storage root recalculation.
 						</span><span class="kw">let </span>start_storage_root = #krate::benchmarking::current_time();
-						#krate::storage_root(#krate::StateVersion::V1);
+						#krate::__private::storage_root(#krate::__private::StateVersion::V1);
 						<span class="kw">let </span>finish_storage_root = #krate::benchmarking::current_time();
 						<span class="kw">let </span>elapsed_storage_root = finish_storage_root - start_storage_root;
 
 						<span class="kw">let </span>skip_meta = [ #(#skip_meta_benchmark_names_str),* ];
 						<span class="kw">let </span>read_and_written_keys = <span class="kw">if </span>skip_meta.contains(<span class="kw-2">&amp;</span>extrinsic) {
-							#<span class="macro">krate::vec!</span>[(<span class="string">b&quot;Skipped Metadata&quot;</span>.to_vec(), <span class="number">0</span>, <span class="number">0</span>, <span class="bool-val">false</span>)]
+							#<span class="macro">krate::__private::vec!</span>[(<span class="string">b&quot;Skipped Metadata&quot;</span>.to_vec(), <span class="number">0</span>, <span class="number">0</span>, <span class="bool-val">false</span>)]
 						} <span class="kw">else </span>{
 							#krate::benchmarking::get_read_and_written_keys()
 						};
@@ -1687,7 +1685,7 @@
 				/// author chooses not to implement benchmarks.
 				</span><span class="attr">#[allow(unused)]
 				</span><span class="kw">fn </span>test_bench_by_name(name: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;(), #krate::BenchmarkError&gt; {
-					<span class="kw">let </span>name = #krate::str::from_utf8(name)
+					<span class="kw">let </span>name = #krate::__private::str::from_utf8(name)
 						.map_err(|<span class="kw">_</span>| -&gt; #krate::BenchmarkError { <span class="string">&quot;`name` is not a valid utf8 string!&quot;</span>.into() })<span class="question-mark">?</span>;
 					<span class="kw">match </span>name {
 						#(#benchmarks_by_name_mappings),
@@ -1744,8 +1742,8 @@
 		<span class="prelude-val">Ok</span>(ident) =&gt; ident,
 		<span class="prelude-val">Err</span>(err) =&gt; <span class="kw">return </span>err.to_compile_error().into(),
 	};
-	<span class="kw">let </span>codec = <span class="macro">quote!</span>(#krate::frame_support::__private::codec);
-	<span class="kw">let </span>traits = <span class="macro">quote!</span>(#krate::frame_support::traits);
+	<span class="kw">let </span>codec = <span class="macro">quote!</span>(#krate::__private::codec);
+	<span class="kw">let </span>traits = <span class="macro">quote!</span>(#krate::__private::traits);
 	<span class="kw">let </span>setup_stmts = benchmark_def.setup_stmts;
 	<span class="kw">let </span>verify_stmts = benchmark_def.verify_stmts;
 	<span class="kw">let </span>last_stmt = benchmark_def.last_stmt;
@@ -1914,8 +1912,8 @@
 		<span class="attr">#[allow(unused_variables)]
 		</span><span class="kw">impl</span>&lt;#type_impl_generics&gt; #krate::BenchmarkingSetup&lt;#type_use_generics&gt;
 		<span class="kw">for </span>#name <span class="kw">where </span>#where_clause {
-			<span class="kw">fn </span>components(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; #krate::Vec&lt;(#krate::BenchmarkParameter, u32, u32)&gt; {
-				#<span class="macro">krate::vec! </span>[
+			<span class="kw">fn </span>components(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; #krate::__private::Vec&lt;(#krate::BenchmarkParameter, u32, u32)&gt; {
+				#<span class="macro">krate::__private::vec! </span>[
 					#(
 						(#krate::BenchmarkParameter::#param_ranges)
 					),*
@@ -1926,7 +1924,7 @@
 				<span class="kw-2">&amp;</span><span class="self">self</span>,
 				components: <span class="kw-2">&amp;</span>[(#krate::BenchmarkParameter, u32)],
 				verify: bool
-			) -&gt; <span class="prelude-ty">Result</span>&lt;#krate::Box&lt;<span class="kw">dyn </span>FnOnce() -&gt; <span class="prelude-ty">Result</span>&lt;(), #krate::BenchmarkError&gt;&gt;, #krate::BenchmarkError&gt; {
+			) -&gt; <span class="prelude-ty">Result</span>&lt;#krate::__private::Box&lt;<span class="kw">dyn </span>FnOnce() -&gt; <span class="prelude-ty">Result</span>&lt;(), #krate::BenchmarkError&gt;&gt;, #krate::BenchmarkError&gt; {
 				#(
 					<span class="comment">// prepare instance #param_names
 					</span><span class="kw">let </span>#param_names = components.iter()
@@ -1940,7 +1938,7 @@
 					#setup_stmts
 				)*
 				#pre_call
-				<span class="prelude-val">Ok</span>(#krate::Box::new(<span class="kw">move </span>|| -&gt; <span class="prelude-ty">Result</span>&lt;(), #krate::BenchmarkError&gt; {
+				<span class="prelude-val">Ok</span>(#krate::__private::Box::new(<span class="kw">move </span>|| -&gt; <span class="prelude-ty">Result</span>&lt;(), #krate::BenchmarkError&gt; {
 					#post_call
 					<span class="kw">if </span>verify {
 						#(
@@ -1961,10 +1959,10 @@
 					SelectedBenchmark <span class="kw">as </span>#krate::BenchmarkingSetup&lt;T, <span class="kw">_</span>&gt;
 				&gt;::components(<span class="kw-2">&amp;</span>selected_benchmark);
 				<span class="kw">let </span>execute_benchmark = |
-					c: #krate::Vec&lt;(#krate::BenchmarkParameter, u32)&gt;
+					c: #krate::__private::Vec&lt;(#krate::BenchmarkParameter, u32)&gt;
 				| -&gt; <span class="prelude-ty">Result</span>&lt;(), #krate::BenchmarkError&gt; {
 					<span class="comment">// Always reset the state after the benchmark.
-					</span>#<span class="macro">krate::defer!</span>(#krate::benchmarking::wipe_db());
+					</span>#<span class="macro">krate::__private::defer!</span>(#krate::benchmarking::wipe_db());
 
 					<span class="comment">// Set up the benchmark, return execution + verification function.
 					</span><span class="kw">let </span>closure_to_verify = &lt;
@@ -1972,7 +1970,7 @@
 					&gt;::instance(<span class="kw-2">&amp;</span>selected_benchmark, <span class="kw-2">&amp;</span>c, <span class="bool-val">true</span>)<span class="question-mark">?</span>;
 
 					<span class="comment">// Set the block number to at least 1 so events are deposited.
-					</span><span class="kw">if </span>#krate::Zero::is_zero(<span class="kw-2">&amp;</span>frame_system::Pallet::&lt;T&gt;::block_number()) {
+					</span><span class="kw">if </span>#krate::__private::Zero::is_zero(<span class="kw-2">&amp;</span>frame_system::Pallet::&lt;T&gt;::block_number()) {
 						frame_system::Pallet::&lt;T&gt;::set_block_number(<span class="number">1u32</span>.into());
 					}
 
@@ -2005,7 +2003,7 @@
 							<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">&quot;The start of a `ParamRange` must be less than or equal to the end&quot;</span>.into());
 						}
 
-						<span class="kw">let </span><span class="kw-2">mut </span>values = #<span class="macro">krate::vec!</span>[low];
+						<span class="kw">let </span><span class="kw-2">mut </span>values = #<span class="macro">krate::__private::vec!</span>[low];
 						<span class="kw">let </span>diff = (high - low).min(num_values - <span class="number">1</span>);
 						<span class="kw">let </span>slope = (high - low) <span class="kw">as </span>f32 / diff <span class="kw">as </span>f32;
 
@@ -2017,7 +2015,7 @@
 
 						<span class="kw">for </span>component_value <span class="kw">in </span>values {
 							<span class="comment">// Select the max value for all the other components.
-							</span><span class="kw">let </span>c: #krate::Vec&lt;(#krate::BenchmarkParameter, u32)&gt; = components
+							</span><span class="kw">let </span>c: #krate::__private::Vec&lt;(#krate::BenchmarkParameter, u32)&gt; = components
 								.iter()
 								.map(|(n, <span class="kw">_</span>, h)|
 									<span class="kw">if </span><span class="kw-2">*</span>n == name {
