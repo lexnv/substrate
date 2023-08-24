@@ -1817,8 +1817,8 @@
 <span class="kw">mod </span>wasm;
 
 <span class="kw">pub mod </span>chain_extension;
+<span class="kw">pub mod </span>debug;
 <span class="kw">pub mod </span>migration;
-<span class="kw">pub mod </span>unsafe_debug;
 <span class="kw">pub mod </span>weights;
 
 <span class="attr">#[cfg(test)]
@@ -1865,6 +1865,7 @@
 
 <span class="kw">pub use crate</span>::{
 	address::{AddressGenerator, DefaultAddressGenerator},
+	debug::Tracing,
 	exec::Frame,
 	migration::{MigrateSequence, Migration, NoopMigration},
 	pallet::<span class="kw-2">*</span>,
@@ -1940,6 +1941,7 @@
 <span class="attr">#[frame_support::pallet]
 </span><span class="kw">pub mod </span>pallet {
 	<span class="kw">use super</span>::<span class="kw-2">*</span>;
+	<span class="kw">use </span><span class="kw">crate</span>::debug::Debugger;
 	<span class="kw">use </span>frame_support::pallet_prelude::<span class="kw-2">*</span>;
 	<span class="kw">use </span>frame_system::pallet_prelude::<span class="kw-2">*</span>;
 	<span class="kw">use </span>sp_runtime::Perbill;
@@ -2111,13 +2113,11 @@
 		/// ```
 		</span><span class="kw">type </span>Migrations: MigrateSequence;
 
-		<span class="doccomment">/// Type that provides debug handling for the contract execution process.
-		///
-		/// # Warning
-		///
-		/// Do **not** use it in a production environment or for benchmarking purposes.
-		</span><span class="attr">#[cfg(feature = <span class="string">&quot;unsafe-debug&quot;</span>)]
-		</span><span class="kw">type </span>Debug: unsafe_debug::UnsafeDebug&lt;<span class="self">Self</span>&gt;;
+		<span class="doccomment">/// # Note
+		/// For most production chains, it&#39;s recommended to use the `()` implementation of this
+		/// trait. This implementation offers additional logging when the log target
+		/// &quot;runtime::contracts&quot; is set to trace.
+		</span><span class="kw">type </span>Debug: Debugger&lt;<span class="self">Self</span>&gt;;
 
 		<span class="doccomment">/// Type that bundles together all the runtime configurable interface types.
 		///

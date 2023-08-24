@@ -59,4 +59,45 @@ should specify which version it implements by adding <code>api_version</code> at
 }</code></pre></div>
 <p>In this case <code>Balance</code> api version 3 is being implemented for <code>Runtime</code>. The <code>impl</code> block
 must contain all methods declared in version 3 and below.</p>
+<h2 id="conditional-version-implementation"><a href="#conditional-version-implementation">Conditional version implementation</a></h2>
+<p><code>impl_runtime_apis!</code> supports <code>cfg_attr</code> attribute for conditional compilation. For example
+let’s say you want to implement a staging version of the runtime api and put it behind a
+feature flag. You can do it this way:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">pub struct </span>Runtime {}
+<span class="macro">sp_api::decl_runtime_apis! </span>{
+    <span class="kw">pub trait </span>ApiWithStagingMethod {
+        <span class="kw">fn </span>stable_one(data: u64);
+
+        <span class="attr">#[api_version(<span class="number">99</span>)]
+        </span><span class="kw">fn </span>staging_one();
+    }
+}
+
+<span class="macro">sp_api::impl_runtime_apis! </span>{
+    <span class="attr">#[cfg_attr(feature = <span class="string">&quot;enable-staging-api&quot;</span>, api_version(<span class="number">99</span>))]
+    </span><span class="kw">impl </span><span class="self">self</span>::ApiWithStagingMethod&lt;Block&gt; <span class="kw">for </span>Runtime {
+        <span class="kw">fn </span>stable_one(<span class="kw">_</span>: u64) {}
+
+        <span class="attr">#[cfg(feature = <span class="string">&quot;enable-staging-api&quot;</span>)]
+        </span><span class="kw">fn </span>staging_one() {}
+    }
+}</code></pre></div>
+<p><a href="macro.decl_runtime_apis.html" title="macro sp_api::decl_runtime_apis"><code>decl_runtime_apis!</code></a> declares two version of the api - 1 (the default one, which is
+considered stable in our example) and 99 (which is considered staging). In
+<code>impl_runtime_apis!</code> a <code>cfg_attr</code> attribute is attached to the <code>ApiWithStagingMethod</code>
+implementation. If the code is compiled with  <code>enable-staging-api</code> feature a version 99 of
+the runtime api will be built which will include <code>staging_one</code>. Note that <code>staging_one</code>
+implementation is feature gated by <code>#[cfg(feature = ... )]</code> attribute.</p>
+<p>If the code is compiled without <code>enable-staging-api</code> version 1 (the default one) will be
+built which doesn’t include <code>staging_one</code>.</p>
+<p><code>cfg_attr</code> can also be used together with <code>api_version</code>. For the next snippet will build
+version 99 if <code>enable-staging-api</code> is enabled and version 2 otherwise because both
+<code>cfg_attr</code> and <code>api_version</code> are attached to the impl block:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="attr">#[cfg_attr(feature = <span class="string">&quot;enable-staging-api&quot;</span>, api_version(<span class="number">99</span>))]
+#[api_version(<span class="number">2</span>)]
+</span><span class="kw">impl </span><span class="self">self</span>::ApiWithStagingAndVersionedMethods&lt;Block&gt; <span class="kw">for </span>Runtime {
+ <span class="comment">// impl skipped
+</span>}</code></pre></div>
 </div></details></section></div></main></body></html>

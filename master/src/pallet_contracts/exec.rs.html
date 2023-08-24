@@ -3882,12 +3882,6 @@
 <a href="#3882" id="3882">3882</a>
 <a href="#3883" id="3883">3883</a>
 <a href="#3884" id="3884">3884</a>
-<a href="#3885" id="3885">3885</a>
-<a href="#3886" id="3886">3886</a>
-<a href="#3887" id="3887">3887</a>
-<a href="#3888" id="3888">3888</a>
-<a href="#3889" id="3889">3889</a>
-<a href="#3890" id="3890">3890</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -3905,9 +3899,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-</span><span class="attr">#[cfg(feature = <span class="string">&quot;unsafe-debug&quot;</span>)]
-</span><span class="kw">use </span><span class="kw">crate</span>::unsafe_debug::ExecutionObserver;
-<span class="kw">use crate</span>::{
+</span><span class="kw">use crate</span>::{
+	debug::{CallSpan, Tracing},
 	gas::GasMeter,
 	storage::{<span class="self">self</span>, meter::Diff, WriteOutcome},
 	BalanceOf, CodeHash, CodeInfo, CodeInfoOf, Config, ContractInfo, ContractInfoOf,
@@ -4798,20 +4791,15 @@
 			<span class="comment">// Every non delegate call or instantiate also optionally transfers the balance.
 			</span><span class="self">self</span>.initial_transfer()<span class="question-mark">?</span>;
 
-			<span class="attr">#[cfg(feature = <span class="string">&quot;unsafe-debug&quot;</span>)]
-			</span><span class="kw">let </span>(code_hash, input_clone) = {
-				<span class="kw">let </span>code_hash = <span class="kw-2">*</span>executable.code_hash();
-				T::Debug::before_call(<span class="kw-2">&amp;</span>code_hash, entry_point, <span class="kw-2">&amp;</span>input_data);
-				(code_hash, input_data.clone())
-			};
+			<span class="kw">let </span>call_span =
+				T::Debug::new_call_span(executable.code_hash(), entry_point, <span class="kw-2">&amp;</span>input_data);
 
 			<span class="comment">// Call into the Wasm blob.
 			</span><span class="kw">let </span>output = executable
 				.execute(<span class="self">self</span>, <span class="kw-2">&amp;</span>entry_point, input_data)
 				.map_err(|e| ExecError { error: e.error, origin: ErrorOrigin::Callee })<span class="question-mark">?</span>;
 
-			<span class="attr">#[cfg(feature = <span class="string">&quot;unsafe-debug&quot;</span>)]
-			</span>T::Debug::after_call(<span class="kw-2">&amp;</span>code_hash, entry_point, input_clone, <span class="kw-2">&amp;</span>output);
+			call_span.after_call(<span class="kw-2">&amp;</span>output);
 
 			<span class="comment">// Avoid useless work that would be reverted anyways.
 			</span><span class="kw">if </span>output.did_revert() {
