@@ -263,6 +263,65 @@
 <a href="#263" id="263">263</a>
 <a href="#264" id="264">264</a>
 <a href="#265" id="265">265</a>
+<a href="#266" id="266">266</a>
+<a href="#267" id="267">267</a>
+<a href="#268" id="268">268</a>
+<a href="#269" id="269">269</a>
+<a href="#270" id="270">270</a>
+<a href="#271" id="271">271</a>
+<a href="#272" id="272">272</a>
+<a href="#273" id="273">273</a>
+<a href="#274" id="274">274</a>
+<a href="#275" id="275">275</a>
+<a href="#276" id="276">276</a>
+<a href="#277" id="277">277</a>
+<a href="#278" id="278">278</a>
+<a href="#279" id="279">279</a>
+<a href="#280" id="280">280</a>
+<a href="#281" id="281">281</a>
+<a href="#282" id="282">282</a>
+<a href="#283" id="283">283</a>
+<a href="#284" id="284">284</a>
+<a href="#285" id="285">285</a>
+<a href="#286" id="286">286</a>
+<a href="#287" id="287">287</a>
+<a href="#288" id="288">288</a>
+<a href="#289" id="289">289</a>
+<a href="#290" id="290">290</a>
+<a href="#291" id="291">291</a>
+<a href="#292" id="292">292</a>
+<a href="#293" id="293">293</a>
+<a href="#294" id="294">294</a>
+<a href="#295" id="295">295</a>
+<a href="#296" id="296">296</a>
+<a href="#297" id="297">297</a>
+<a href="#298" id="298">298</a>
+<a href="#299" id="299">299</a>
+<a href="#300" id="300">300</a>
+<a href="#301" id="301">301</a>
+<a href="#302" id="302">302</a>
+<a href="#303" id="303">303</a>
+<a href="#304" id="304">304</a>
+<a href="#305" id="305">305</a>
+<a href="#306" id="306">306</a>
+<a href="#307" id="307">307</a>
+<a href="#308" id="308">308</a>
+<a href="#309" id="309">309</a>
+<a href="#310" id="310">310</a>
+<a href="#311" id="311">311</a>
+<a href="#312" id="312">312</a>
+<a href="#313" id="313">313</a>
+<a href="#314" id="314">314</a>
+<a href="#315" id="315">315</a>
+<a href="#316" id="316">316</a>
+<a href="#317" id="317">317</a>
+<a href="#318" id="318">318</a>
+<a href="#319" id="319">319</a>
+<a href="#320" id="320">320</a>
+<a href="#321" id="321">321</a>
+<a href="#322" id="322">322</a>
+<a href="#323" id="323">323</a>
+<a href="#324" id="324">324</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -283,7 +342,7 @@
 
 </span><span class="doccomment">//! Implementation of the `chainHead_storage` method.
 
-</span><span class="kw">use </span>std::{marker::PhantomData, sync::Arc};
+</span><span class="kw">use </span>std::{collections::VecDeque, marker::PhantomData, sync::Arc};
 
 <span class="kw">use </span>sc_client_api::{Backend, ChildInfo, StorageKey, StorageProvider};
 <span class="kw">use </span>sc_utils::mpsc::TracingUnboundedSender;
@@ -302,10 +361,6 @@
 	FollowEvent,
 };
 
-<span class="doccomment">/// The maximum number of items the `chainHead_storage` can return
-/// before paginations is required.
-</span><span class="kw">const </span>MAX_ITER_ITEMS: usize = <span class="number">10</span>;
-
 <span class="doccomment">/// The query type of an interation.
 </span><span class="kw">enum </span>IterQueryType {
 	<span class="doccomment">/// Iterating over (key, value) pairs.
@@ -318,14 +373,32 @@
 </span><span class="kw">pub struct </span>ChainHeadStorage&lt;Client, Block, BE&gt; {
 	<span class="doccomment">/// Substrate client.
 	</span>client: Arc&lt;Client&gt;,
-	_phantom: PhantomData&lt;(Block, BE)&gt;,
+	<span class="doccomment">/// Queue of operations that may require pagination.
+	</span>iter_operations: VecDeque&lt;QueryIter&gt;,
+	<span class="doccomment">/// The maximum number of items reported by the `chainHead_storage` before
+	/// pagination is required.
+	</span>operation_max_storage_items: usize,
+	_phandom: PhantomData&lt;(BE, Block)&gt;,
 }
 
 <span class="kw">impl</span>&lt;Client, Block, BE&gt; ChainHeadStorage&lt;Client, Block, BE&gt; {
 	<span class="doccomment">/// Constructs a new [`ChainHeadStorage`].
-	</span><span class="kw">pub fn </span>new(client: Arc&lt;Client&gt;) -&gt; <span class="self">Self </span>{
-		<span class="self">Self </span>{ client, _phantom: PhantomData }
+	</span><span class="kw">pub fn </span>new(client: Arc&lt;Client&gt;, operation_max_storage_items: usize) -&gt; <span class="self">Self </span>{
+		<span class="self">Self </span>{
+			client,
+			iter_operations: VecDeque::new(),
+			operation_max_storage_items,
+			_phandom: PhantomData,
+		}
 	}
+}
+
+<span class="doccomment">/// Query to iterate over storage.
+</span><span class="kw">struct </span>QueryIter {
+	<span class="doccomment">/// The next key from which the iteration should continue.
+	</span>next_key: StorageKey,
+	<span class="doccomment">/// The type of the query (either value or hash).
+	</span>ty: IterQueryType,
 }
 
 <span class="doccomment">/// Checks if the provided key (main or child key) is valid
@@ -342,7 +415,7 @@
 </span><span class="kw">type </span>QueryResult = <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;StorageResult&gt;, String&gt;;
 
 <span class="doccomment">/// The result of iterating over keys.
-</span><span class="kw">type </span>QueryIterResult = <span class="prelude-ty">Result</span>&lt;Vec&lt;StorageResult&gt;, String&gt;;
+</span><span class="kw">type </span>QueryIterResult = <span class="prelude-ty">Result</span>&lt;(Vec&lt;StorageResult&gt;, <span class="prelude-ty">Option</span>&lt;QueryIter&gt;), String&gt;;
 
 <span class="kw">impl</span>&lt;Client, Block, BE&gt; ChainHeadStorage&lt;Client, Block, BE&gt;
 <span class="kw">where
@@ -396,64 +469,118 @@
 			.unwrap_or_else(|error| QueryResult::Err(error.to_string()))
 	}
 
-	<span class="doccomment">/// Handle iterating over (key, value) or (key, hash) pairs.
-	</span><span class="kw">fn </span>query_storage_iter(
+	<span class="doccomment">/// Iterate over at most `operation_max_storage_items` keys.
+	///
+	/// Returns the storage result with a potential next key to resume iteration.
+	</span><span class="kw">fn </span>query_storage_iter_pagination(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
+		query: QueryIter,
 		hash: Block::Hash,
-		key: <span class="kw-2">&amp;</span>StorageKey,
 		child_key: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>ChildInfo&gt;,
-		ty: IterQueryType,
 	) -&gt; QueryIterResult {
-		<span class="kw">let </span>keys_iter = <span class="kw">if let </span><span class="prelude-val">Some</span>(child_key) = child_key {
-			<span class="self">self</span>.client.child_storage_keys(hash, child_key.to_owned(), <span class="prelude-val">Some</span>(key), <span class="prelude-val">None</span>)
-		} <span class="kw">else </span>{
-			<span class="self">self</span>.client.storage_keys(hash, <span class="prelude-val">Some</span>(key), <span class="prelude-val">None</span>)
-		}
-		.map_err(|error| error.to_string())<span class="question-mark">?</span>;
+		<span class="kw">let </span>QueryIter { next_key, ty } = query;
 
-		<span class="kw">let </span><span class="kw-2">mut </span>ret = Vec::with_capacity(MAX_ITER_ITEMS);
-		<span class="kw">let </span><span class="kw-2">mut </span>keys_iter = keys_iter.take(MAX_ITER_ITEMS);
-		<span class="kw">while let </span><span class="prelude-val">Some</span>(key) = keys_iter.next() {
+		<span class="kw">let </span><span class="kw-2">mut </span>keys_iter = <span class="kw">if let </span><span class="prelude-val">Some</span>(child_key) = child_key {
+			<span class="self">self</span>.client
+				.child_storage_keys(hash, child_key.to_owned(), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>next_key), <span class="prelude-val">None</span>)
+		} <span class="kw">else </span>{
+			<span class="self">self</span>.client.storage_keys(hash, <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>next_key), <span class="prelude-val">None</span>)
+		}
+		.map_err(|err| err.to_string())<span class="question-mark">?</span>;
+
+		<span class="kw">let </span><span class="kw-2">mut </span>ret = Vec::with_capacity(<span class="self">self</span>.operation_max_storage_items);
+		<span class="kw">for _ in </span><span class="number">0</span>..<span class="self">self</span>.operation_max_storage_items {
+			<span class="kw">let </span><span class="prelude-val">Some</span>(key) = keys_iter.next() <span class="kw">else </span>{
+				<span class="kw">break
+			</span>};
+
 			<span class="kw">let </span>result = <span class="kw">match </span>ty {
 				IterQueryType::Value =&gt; <span class="self">self</span>.query_storage_value(hash, <span class="kw-2">&amp;</span>key, child_key),
 				IterQueryType::Hash =&gt; <span class="self">self</span>.query_storage_hash(hash, <span class="kw-2">&amp;</span>key, child_key),
 			}<span class="question-mark">?</span>;
 
-			<span class="kw">if let </span><span class="prelude-val">Some</span>(result) = result {
-				ret.push(result);
+			<span class="kw">if let </span><span class="prelude-val">Some</span>(value) = result {
+				ret.push(value);
 			}
 		}
 
-		QueryIterResult::Ok(ret)
+		<span class="comment">// Save the next key if any to continue the iteration.
+		</span><span class="kw">let </span>maybe_next_query = keys_iter.next().map(|next_key| QueryIter { next_key, ty });
+		<span class="prelude-val">Ok</span>((ret, maybe_next_query))
+	}
+
+	<span class="doccomment">/// Iterate over (key, hash) and (key, value) generating the `WaitingForContinue` event if
+	/// necessary.
+	</span><span class="kw">async fn </span>generate_storage_iter_events(
+		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
+		<span class="kw-2">mut </span>block_guard: BlockGuard&lt;Block, BE&gt;,
+		hash: Block::Hash,
+		child_key: <span class="prelude-ty">Option</span>&lt;ChildInfo&gt;,
+	) {
+		<span class="kw">let </span>sender = block_guard.response_sender();
+		<span class="kw">let </span>operation = block_guard.operation();
+
+		<span class="kw">while let </span><span class="prelude-val">Some</span>(query) = <span class="self">self</span>.iter_operations.pop_front() {
+			<span class="kw">if </span>operation.was_stopped() {
+				<span class="kw">return
+			</span>}
+
+			<span class="kw">let </span>result = <span class="self">self</span>.query_storage_iter_pagination(query, hash, child_key.as_ref());
+			<span class="kw">let </span>(events, maybe_next_query) = <span class="kw">match </span>result {
+				QueryIterResult::Ok(result) =&gt; result,
+				QueryIterResult::Err(error) =&gt; {
+					send_error::&lt;Block&gt;(<span class="kw-2">&amp;</span>sender, operation.operation_id(), error.to_string());
+					<span class="kw">return
+				</span>},
+			};
+
+			<span class="kw">if </span>!events.is_empty() {
+				<span class="comment">// Send back the results of the iteration produced so far.
+				</span><span class="kw">let _ </span>= sender.unbounded_send(FollowEvent::&lt;Block::Hash&gt;::OperationStorageItems(
+					OperationStorageItems { operation_id: operation.operation_id(), items: events },
+				));
+			}
+
+			<span class="kw">if let </span><span class="prelude-val">Some</span>(next_query) = maybe_next_query {
+				<span class="kw">let _ </span>=
+					sender.unbounded_send(FollowEvent::&lt;Block::Hash&gt;::OperationWaitingForContinue(
+						OperationId { operation_id: operation.operation_id() },
+					));
+
+				<span class="comment">// The operation might be continued or cancelled only after the
+				// `OperationWaitingForContinue` is generated above.
+				</span>operation.wait_for_continue().<span class="kw">await</span>;
+
+				<span class="comment">// Give a chance for the other items to advance next time.
+				</span><span class="self">self</span>.iter_operations.push_back(next_query);
+			}
+		}
+
+		<span class="kw">if </span>operation.was_stopped() {
+			<span class="kw">return
+		</span>}
+
+		<span class="kw">let _ </span>=
+			sender.unbounded_send(FollowEvent::&lt;Block::Hash&gt;::OperationStorageDone(OperationId {
+				operation_id: operation.operation_id(),
+			}));
 	}
 
 	<span class="doccomment">/// Generate the block events for the `chainHead_storage` method.
-	</span><span class="kw">pub fn </span>generate_events(
-		<span class="kw-2">&amp;</span><span class="self">self</span>,
-		block_guard: BlockGuard&lt;Block, BE&gt;,
+	</span><span class="kw">pub async fn </span>generate_events(
+		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
+		<span class="kw-2">mut </span>block_guard: BlockGuard&lt;Block, BE&gt;,
 		hash: Block::Hash,
 		items: Vec&lt;StorageQuery&lt;StorageKey&gt;&gt;,
 		child_key: <span class="prelude-ty">Option</span>&lt;ChildInfo&gt;,
 	) {
-		<span class="doccomment">/// Build and send the opaque error back to the `chainHead_follow` method.
-		</span><span class="kw">fn </span>send_error&lt;Block: BlockT&gt;(
-			sender: <span class="kw-2">&amp;</span>TracingUnboundedSender&lt;FollowEvent&lt;Block::Hash&gt;&gt;,
-			operation_id: String,
-			error: String,
-		) {
-			<span class="kw">let _ </span>=
-				sender.unbounded_send(FollowEvent::&lt;Block::Hash&gt;::OperationError(OperationError {
-					operation_id,
-					error,
-				}));
-		}
-
 		<span class="kw">let </span>sender = block_guard.response_sender();
+		<span class="kw">let </span>operation = block_guard.operation();
 
 		<span class="kw">if let </span><span class="prelude-val">Some</span>(child_key) = child_key.as_ref() {
 			<span class="kw">if </span>!is_key_queryable(child_key.storage_key()) {
 				<span class="kw">let _ </span>= sender.unbounded_send(FollowEvent::&lt;Block::Hash&gt;::OperationStorageDone(
-					OperationId { operation_id: block_guard.operation_id() },
+					OperationId { operation_id: operation.operation_id() },
 				));
 				<span class="kw">return
 			</span>}
@@ -471,7 +598,7 @@
 						<span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(value)) =&gt; storage_results.push(value),
 						<span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>) =&gt; <span class="kw">continue</span>,
 						<span class="prelude-val">Err</span>(error) =&gt; {
-							send_error::&lt;Block&gt;(<span class="kw-2">&amp;</span>sender, block_guard.operation_id(), error);
+							send_error::&lt;Block&gt;(<span class="kw-2">&amp;</span>sender, operation.operation_id(), error);
 							<span class="kw">return
 						</span>},
 					}
@@ -481,34 +608,16 @@
 						<span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(value)) =&gt; storage_results.push(value),
 						<span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>) =&gt; <span class="kw">continue</span>,
 						<span class="prelude-val">Err</span>(error) =&gt; {
-							send_error::&lt;Block&gt;(<span class="kw-2">&amp;</span>sender, block_guard.operation_id(), error);
+							send_error::&lt;Block&gt;(<span class="kw-2">&amp;</span>sender, operation.operation_id(), error);
 							<span class="kw">return
 						</span>},
 					},
-				StorageQueryType::DescendantsValues =&gt; <span class="kw">match </span><span class="self">self</span>.query_storage_iter(
-					hash,
-					<span class="kw-2">&amp;</span>item.key,
-					child_key.as_ref(),
-					IterQueryType::Value,
-				) {
-					<span class="prelude-val">Ok</span>(values) =&gt; storage_results.extend(values),
-					<span class="prelude-val">Err</span>(error) =&gt; {
-						send_error::&lt;Block&gt;(<span class="kw-2">&amp;</span>sender, block_guard.operation_id(), error);
-						<span class="kw">return
-					</span>},
-				},
-				StorageQueryType::DescendantsHashes =&gt; <span class="kw">match </span><span class="self">self</span>.query_storage_iter(
-					hash,
-					<span class="kw-2">&amp;</span>item.key,
-					child_key.as_ref(),
-					IterQueryType::Hash,
-				) {
-					<span class="prelude-val">Ok</span>(values) =&gt; storage_results.extend(values),
-					<span class="prelude-val">Err</span>(error) =&gt; {
-						send_error::&lt;Block&gt;(<span class="kw-2">&amp;</span>sender, block_guard.operation_id(), error);
-						<span class="kw">return
-					</span>},
-				},
+				StorageQueryType::DescendantsValues =&gt; <span class="self">self
+					</span>.iter_operations
+					.push_back(QueryIter { next_key: item.key, ty: IterQueryType::Value }),
+				StorageQueryType::DescendantsHashes =&gt; <span class="self">self
+					</span>.iter_operations
+					.push_back(QueryIter { next_key: item.key, ty: IterQueryType::Hash }),
 				<span class="kw">_ </span>=&gt; <span class="kw">continue</span>,
 			};
 		}
@@ -516,16 +625,25 @@
 		<span class="kw">if </span>!storage_results.is_empty() {
 			<span class="kw">let _ </span>= sender.unbounded_send(FollowEvent::&lt;Block::Hash&gt;::OperationStorageItems(
 				OperationStorageItems {
-					operation_id: block_guard.operation_id(),
+					operation_id: operation.operation_id(),
 					items: storage_results,
 				},
 			));
 		}
 
-		<span class="kw">let _ </span>=
-			sender.unbounded_send(FollowEvent::&lt;Block::Hash&gt;::OperationStorageDone(OperationId {
-				operation_id: block_guard.operation_id(),
-			}));
-	}
+		<span class="self">self</span>.generate_storage_iter_events(block_guard, hash, child_key).<span class="kw">await
+	</span>}
+}
+
+<span class="doccomment">/// Build and send the opaque error back to the `chainHead_follow` method.
+</span><span class="kw">fn </span>send_error&lt;Block: BlockT&gt;(
+	sender: <span class="kw-2">&amp;</span>TracingUnboundedSender&lt;FollowEvent&lt;Block::Hash&gt;&gt;,
+	operation_id: String,
+	error: String,
+) {
+	<span class="kw">let _ </span>= sender.unbounded_send(FollowEvent::&lt;Block::Hash&gt;::OperationError(OperationError {
+		operation_id,
+		error,
+	}));
 }
 </code></pre></div></section></main></body></html>
