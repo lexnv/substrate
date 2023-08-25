@@ -250,6 +250,12 @@
 <a href="#250" id="250">250</a>
 <a href="#251" id="251">251</a>
 <a href="#252" id="252">252</a>
+<a href="#253" id="253">253</a>
+<a href="#254" id="254">254</a>
+<a href="#255" id="255">255</a>
+<a href="#256" id="256">256</a>
+<a href="#257" id="257">257</a>
+<a href="#258" id="258">258</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -412,6 +418,12 @@
 	</span><span class="kw">pub struct </span>MmrRootProvider&lt;B, R&gt; {
 		runtime: Arc&lt;R&gt;,
 		_phantom: PhantomData&lt;B&gt;,
+	}
+
+	<span class="kw">impl</span>&lt;B, R&gt; Clone <span class="kw">for </span>MmrRootProvider&lt;B, R&gt; {
+		<span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
+			<span class="self">Self </span>{ runtime: <span class="self">self</span>.runtime.clone(), _phantom: PhantomData }
+		}
 	}
 
 	<span class="kw">impl</span>&lt;B, R&gt; MmrRootProvider&lt;B, R&gt;

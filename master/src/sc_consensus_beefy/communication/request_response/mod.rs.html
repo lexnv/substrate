@@ -103,6 +103,9 @@
 <a href="#103" id="103">103</a>
 <a href="#104" id="104">104</a>
 <a href="#105" id="105">105</a>
+<a href="#106" id="106">106</a>
+<a href="#107" id="107">107</a>
+<a href="#108" id="108">108</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -180,7 +183,7 @@
 }
 
 <span class="attr">#[derive(Debug, thiserror::Error)]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>Error {
+</span><span class="kw">pub enum </span>Error {
 	<span class="attr">#[error(transparent)]
 	</span>Client(<span class="attr">#[from] </span>sp_blockchain::Error),
 
@@ -207,5 +210,8 @@
 
 	<span class="attr">#[error(<span class="string">&quot;Internal error while getting response.&quot;</span>)]
 	</span>ResponseError,
+
+	<span class="attr">#[error(<span class="string">&quot;On-demand requests receiver stream terminated.&quot;</span>)]
+	</span>RequestsReceiverStreamClosed,
 }
 </code></pre></div></section></main></body></html>

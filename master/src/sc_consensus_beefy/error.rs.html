@@ -52,6 +52,16 @@
 <a href="#52" id="52">52</a>
 <a href="#53" id="53">53</a>
 <a href="#54" id="54">54</a>
+<a href="#55" id="55">55</a>
+<a href="#56" id="56">56</a>
+<a href="#57" id="57">57</a>
+<a href="#58" id="58">58</a>
+<a href="#59" id="59">59</a>
+<a href="#60" id="60">60</a>
+<a href="#61" id="61">61</a>
+<a href="#62" id="62">62</a>
+<a href="#63" id="63">63</a>
+<a href="#64" id="64">64</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -88,8 +98,18 @@
 	</span>Signature(String),
 	<span class="attr">#[error(<span class="string">&quot;Session uninitialized&quot;</span>)]
 	</span>UninitSession,
-	<span class="attr">#[error(<span class="string">&quot;pallet-beefy was reset, please restart voter&quot;</span>)]
+	<span class="attr">#[error(<span class="string">&quot;pallet-beefy was reset&quot;</span>)]
 	</span>ConsensusReset,
+	<span class="attr">#[error(<span class="string">&quot;Block import stream terminated&quot;</span>)]
+	</span>BlockImportStreamTerminated,
+	<span class="attr">#[error(<span class="string">&quot;Gossip Engine terminated&quot;</span>)]
+	</span>GossipEngineTerminated,
+	<span class="attr">#[error(<span class="string">&quot;Finality proofs gossiping stream terminated&quot;</span>)]
+	</span>FinalityProofGossipStreamTerminated,
+	<span class="attr">#[error(<span class="string">&quot;Finality stream terminated&quot;</span>)]
+	</span>FinalityStreamTerminated,
+	<span class="attr">#[error(<span class="string">&quot;Votes gossiping stream terminated&quot;</span>)]
+	</span>VotesGossipStreamTerminated,
 }
 
 <span class="attr">#[cfg(test)]

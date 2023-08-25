@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["BeefyJustifsRequestHandler","JustificationRequest"]};
+window.SIDEBAR_ITEMS = {"enum":["Error"],"struct":["BeefyJustifsRequestHandler","JustificationRequest"]};

@@ -1646,18 +1646,6 @@
 <a href="#1646" id="1646">1646</a>
 <a href="#1647" id="1647">1647</a>
 <a href="#1648" id="1648">1648</a>
-<a href="#1649" id="1649">1649</a>
-<a href="#1650" id="1650">1650</a>
-<a href="#1651" id="1651">1651</a>
-<a href="#1652" id="1652">1652</a>
-<a href="#1653" id="1653">1653</a>
-<a href="#1654" id="1654">1654</a>
-<a href="#1655" id="1655">1655</a>
-<a href="#1656" id="1656">1656</a>
-<a href="#1657" id="1657">1657</a>
-<a href="#1658" id="1658">1658</a>
-<a href="#1659" id="1659">1659</a>
-<a href="#1660" id="1660">1660</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -2107,11 +2095,7 @@
 			.ok()
 			.flatten()
 			.filter(|genesis| <span class="kw-2">*</span>genesis == <span class="self">self</span>.persisted_state.pallet_genesis)
-			.ok_or_else(|| {
-				<span class="kw">let </span>err = Error::ConsensusReset;
-				<span class="macro">error!</span>(target: LOG_TARGET, <span class="string">&quot;🥩 Error: {}&quot;</span>, err);
-				err
-			})<span class="question-mark">?</span>;
+			.ok_or(Error::ConsensusReset)<span class="question-mark">?</span>;
 
 		<span class="kw">if </span><span class="kw-2">*</span>header.number() &gt; <span class="self">self</span>.best_grandpa_block() {
 			<span class="comment">// update best GRANDPA finalized block we have seen
@@ -2455,11 +2439,12 @@
 	<span class="doccomment">/// Main loop for BEEFY worker.
 	///
 	/// Run the main async loop which is driven by finality notifications and gossiped votes.
+	/// Should never end, returns `Error` otherwise.
 	</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">async fn </span>run(
 		<span class="kw-2">mut </span><span class="self">self</span>,
-		<span class="kw-2">mut </span>block_import_justif: Fuse&lt;NotificationReceiver&lt;BeefyVersionedFinalityProof&lt;B&gt;&gt;&gt;,
-		<span class="kw-2">mut </span>finality_notifications: Fuse&lt;FinalityNotifications&lt;B&gt;&gt;,
-	) {
+		block_import_justif: <span class="kw-2">&amp;mut </span>Fuse&lt;NotificationReceiver&lt;BeefyVersionedFinalityProof&lt;B&gt;&gt;&gt;,
+		finality_notifications: <span class="kw-2">&amp;mut </span>Fuse&lt;FinalityNotifications&lt;B&gt;&gt;,
+	) -&gt; Error {
 		<span class="macro">info!</span>(
 			target: LOG_TARGET,
 			<span class="string">&quot;🥩 run BEEFY worker, best grandpa: #{:?}.&quot;</span>,
@@ -2508,17 +2493,17 @@
 				<span class="comment">// Use `select_biased!` to prioritize order below.
 				// Process finality notifications first since these drive the voter.
 				</span>notification = finality_notifications.next() =&gt; {
-					<span class="kw">if </span>notification.and_then(|notif| {
-						<span class="self">self</span>.handle_finality_notification(<span class="kw-2">&amp;</span>notif).ok()
-					}).is_none() {
-						<span class="macro">error!</span>(target: LOG_TARGET, <span class="string">&quot;🥩 Finality stream terminated, closing worker.&quot;</span>);
-						<span class="kw">return</span>;
+					<span class="kw">if let </span><span class="prelude-val">Some</span>(notif) = notification {
+						<span class="kw">if let </span><span class="prelude-val">Err</span>(err) = <span class="self">self</span>.handle_finality_notification(<span class="kw-2">&amp;</span>notif) {
+							<span class="kw">return </span>err;
+						}
+					} <span class="kw">else </span>{
+						<span class="kw">return </span>Error::FinalityStreamTerminated;
 					}
 				},
 				<span class="comment">// Make sure to pump gossip engine.
 				</span><span class="kw">_ </span>= gossip_engine =&gt; {
-					<span class="macro">error!</span>(target: LOG_TARGET, <span class="string">&quot;🥩 Gossip engine has terminated, closing worker.&quot;</span>);
-					<span class="kw">return</span>;
+					<span class="kw">return </span>Error::GossipEngineTerminated;
 				},
 				<span class="comment">// Process incoming justifications as these can make some in-flight votes obsolete.
 				</span>response_info = <span class="self">self</span>.on_demand_justifications.next().fuse() =&gt; {
@@ -2541,8 +2526,7 @@
 							<span class="macro">debug!</span>(target: LOG_TARGET, <span class="string">&quot;🥩 {}&quot;</span>, err);
 						}
 					} <span class="kw">else </span>{
-						<span class="macro">error!</span>(target: LOG_TARGET, <span class="string">&quot;🥩 Block import stream terminated, closing worker.&quot;</span>);
-						<span class="kw">return</span>;
+						<span class="kw">return </span>Error::BlockImportStreamTerminated;
 					}
 				},
 				justif = gossip_proofs.next() =&gt; {
@@ -2552,11 +2536,7 @@
 							<span class="macro">debug!</span>(target: LOG_TARGET, <span class="string">&quot;🥩 {}&quot;</span>, err);
 						}
 					} <span class="kw">else </span>{
-						<span class="macro">error!</span>(
-							target: LOG_TARGET,
-							<span class="string">&quot;🥩 Finality proofs gossiping stream terminated, closing worker.&quot;
-						</span>);
-						<span class="kw">return</span>;
+						<span class="kw">return </span>Error::FinalityProofGossipStreamTerminated;
 					}
 				},
 				<span class="comment">// Finally process incoming votes.
@@ -2567,11 +2547,7 @@
 							<span class="macro">debug!</span>(target: LOG_TARGET, <span class="string">&quot;🥩 {}&quot;</span>, err);
 						}
 					} <span class="kw">else </span>{
-						<span class="macro">error!</span>(
-							target: LOG_TARGET,
-							<span class="string">&quot;🥩 Votes gossiping stream terminated, closing worker.&quot;
-						</span>);
-						<span class="kw">return</span>;
+						<span class="kw">return </span>Error::VotesGossipStreamTerminated;
 					}
 				},
 				<span class="comment">// Process peer reports.

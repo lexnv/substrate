@@ -1642,6 +1642,52 @@
 <a href="#1642" id="1642">1642</a>
 <a href="#1643" id="1643">1643</a>
 <a href="#1644" id="1644">1644</a>
+<a href="#1645" id="1645">1645</a>
+<a href="#1646" id="1646">1646</a>
+<a href="#1647" id="1647">1647</a>
+<a href="#1648" id="1648">1648</a>
+<a href="#1649" id="1649">1649</a>
+<a href="#1650" id="1650">1650</a>
+<a href="#1651" id="1651">1651</a>
+<a href="#1652" id="1652">1652</a>
+<a href="#1653" id="1653">1653</a>
+<a href="#1654" id="1654">1654</a>
+<a href="#1655" id="1655">1655</a>
+<a href="#1656" id="1656">1656</a>
+<a href="#1657" id="1657">1657</a>
+<a href="#1658" id="1658">1658</a>
+<a href="#1659" id="1659">1659</a>
+<a href="#1660" id="1660">1660</a>
+<a href="#1661" id="1661">1661</a>
+<a href="#1662" id="1662">1662</a>
+<a href="#1663" id="1663">1663</a>
+<a href="#1664" id="1664">1664</a>
+<a href="#1665" id="1665">1665</a>
+<a href="#1666" id="1666">1666</a>
+<a href="#1667" id="1667">1667</a>
+<a href="#1668" id="1668">1668</a>
+<a href="#1669" id="1669">1669</a>
+<a href="#1670" id="1670">1670</a>
+<a href="#1671" id="1671">1671</a>
+<a href="#1672" id="1672">1672</a>
+<a href="#1673" id="1673">1673</a>
+<a href="#1674" id="1674">1674</a>
+<a href="#1675" id="1675">1675</a>
+<a href="#1676" id="1676">1676</a>
+<a href="#1677" id="1677">1677</a>
+<a href="#1678" id="1678">1678</a>
+<a href="#1679" id="1679">1679</a>
+<a href="#1680" id="1680">1680</a>
+<a href="#1681" id="1681">1681</a>
+<a href="#1682" id="1682">1682</a>
+<a href="#1683" id="1683">1683</a>
+<a href="#1684" id="1684">1684</a>
+<a href="#1685" id="1685">1685</a>
+<a href="#1686" id="1686">1686</a>
+<a href="#1687" id="1687">1687</a>
+<a href="#1688" id="1688">1688</a>
+<a href="#1689" id="1689">1689</a>
+<a href="#1690" id="1690">1690</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1682,7 +1728,7 @@
 <span class="kw">use </span>proc_macro::TokenStream;
 <span class="kw">use </span>quote::{quote, ToTokens};
 <span class="kw">use </span>std::{cell::RefCell, str::FromStr};
-<span class="kw">use </span>syn::{parse_macro_input, Error, ItemImpl, ItemMod};
+<span class="kw">use </span>syn::{parse_macro_input, Error, ItemImpl, ItemMod, TraitItemType};
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const </span>INHERENT_INSTANCE_NAME: <span class="kw-2">&amp;</span>str = <span class="string">&quot;__InherentHiddenInstance&quot;</span>;
 
@@ -2240,6 +2286,19 @@
 ///
 /// Conversely, the `default_impl_path` argument is required and cannot be omitted.
 ///
+/// Optionally, `no_aggregated_types` can be specified as follows:
+///
+/// ```ignore
+/// #[derive_impl(default_impl_path as disambiguation_path, no_aggregated_types)]
+/// impl SomeTrait for SomeStruct {
+///     ...
+/// }
+/// ```
+///
+/// If specified, this indicates that the aggregated types (as denoted by impl items
+/// attached with [`#[inject_runtime_type]`]) should not be injected with the respective concrete
+/// types. By default, all such types are injected.
+///
 /// You can also make use of `#[pallet::no_default]` on specific items in your default impl that you
 /// want to ensure will not be copied over but that you nonetheless want to use locally in the
 /// context of the foreign impl and the pallet (or context) in which it is defined.
@@ -2403,6 +2462,7 @@
 		attrs.into(),
 		input.into(),
 		custom_attrs.disambiguation_path,
+		custom_attrs.no_aggregated_types,
 	)
 	.unwrap_or_else(|r| r.into_compile_error())
 	.into()
@@ -2415,6 +2475,19 @@
 /// default with the [`#[derive_impl(..)]`](`macro@derive_impl`) attribute macro.
 </span><span class="attr">#[proc_macro_attribute]
 </span><span class="kw">pub fn </span>no_default(<span class="kw">_</span>: TokenStream, <span class="kw">_</span>: TokenStream) -&gt; TokenStream {
+	pallet_macro_stub()
+}
+
+<span class="doccomment">/// The optional attribute `#[pallet::no_default_bounds]` can be attached to trait items within a
+/// `Config` trait impl that has [`#[pallet::config(with_default)]`](`macro@config`) attached.
+///
+/// Attaching this attribute to a trait item ensures that the generated trait `DefaultConfig`
+/// will not have any bounds for this trait item.
+///
+/// As an example, if you have a trait item `type AccountId: SomeTrait;` in your `Config` trait,
+/// the generated `DefaultConfig` will only have `type AccountId;` with no trait bound.
+</span><span class="attr">#[proc_macro_attribute]
+</span><span class="kw">pub fn </span>no_default_bounds(<span class="kw">_</span>: TokenStream, <span class="kw">_</span>: TokenStream) -&gt; TokenStream {
 	pallet_macro_stub()
 }
 
@@ -2485,6 +2558,25 @@
 		<span class="prelude-val">Ok</span>(tokens) =&gt; tokens.into(),
 		<span class="prelude-val">Err</span>(err) =&gt; err.to_compile_error().into(),
 	}
+}
+
+<span class="attr">#[proc_macro_attribute]
+</span><span class="kw">pub fn </span>inject_runtime_type(<span class="kw">_</span>: TokenStream, tokens: TokenStream) -&gt; TokenStream {
+	<span class="kw">let </span>item = tokens.clone();
+	<span class="kw">let </span>item = <span class="macro">syn::parse_macro_input!</span>(item <span class="kw">as </span>TraitItemType);
+	<span class="kw">if </span>item.ident != <span class="string">&quot;RuntimeCall&quot; </span>&amp;&amp;
+		item.ident != <span class="string">&quot;RuntimeEvent&quot; </span>&amp;&amp;
+		item.ident != <span class="string">&quot;RuntimeOrigin&quot; </span>&amp;&amp;
+		item.ident != <span class="string">&quot;PalletInfo&quot;
+	</span>{
+		<span class="kw">return </span>syn::Error::new_spanned(
+			item,
+			<span class="string">&quot;`#[inject_runtime_type]` can only be attached to `RuntimeCall`, `RuntimeEvent`, `RuntimeOrigin` or `PalletInfo`&quot;</span>,
+		)
+		.to_compile_error()
+		.into();
+	}
+	tokens
 }
 
 <span class="doccomment">/// Used internally to decorate pallet attribute macro stubs when they are erroneously used
