@@ -2573,49 +2573,140 @@ async fn stop_storage_operation() {
 
 #[tokio::test]
 async fn storage_closest_merkle_value() {
-	let child_info = ChildInfo::new_default(CHILD_STORAGE_KEY);
-	let builder = TestClientBuilder::new().add_extra_child_storage(
-		&child_info,
-		KEY.to_vec(),
-		CHILD_VALUE.to_vec(),
-	);
-	let backend = builder.backend();
-	let mut client = Arc::new(builder.build());
+	let (mut client, api, mut sub, sub_id, _) = setup_api().await;
 
-	let api = ChainHead::new(
-		client.clone(),
-		backend,
-		Arc::new(TaskExecutor::default()),
-		CHAIN_GENESIS,
-		ChainHeadConfig {
-			global_max_pinned_blocks: MAX_PINNED_BLOCKS,
-			subscription_max_pinned_duration: Duration::from_secs(MAX_PINNED_SECS),
-			subscription_max_ongoing_operations: MAX_OPERATIONS,
-			operation_max_storage_items: MAX_PAGINATION_LIMIT,
-		},
-	)
-	.into_rpc();
+	/// The core of this test.
+	///
+	/// Checks keys that are exact match, keys with descedant and keys that should not return
+	/// values.
+	///
+	/// Returns (key, merkle value) pairs.
+	async fn expect_merkle_request(
+		api: &RpcModule<ChainHead<Backend, Block, Client<Backend>>>,
+		mut sub: &mut RpcSubscription,
+		sub_id: String,
+		block_hash: String,
+	) -> HashMap<String, String> {
+		// Valid call with storage at the keys.
+		let response: MethodResponse = api
+			.call(
+				"chainHead_unstable_storage",
+				rpc_params![
+					&sub_id,
+					&block_hash,
+					vec![
+						StorageQuery {
+							key: hex_string(b":AAAA"),
+							query_type: StorageQueryType::ClosestDescendantMerkleValue
+						},
+						StorageQuery {
+							key: hex_string(b":AAAB"),
+							query_type: StorageQueryType::ClosestDescendantMerkleValue
+						},
+						// Key with descedent.
+						StorageQuery {
+							key: hex_string(b":A"),
+							query_type: StorageQueryType::ClosestDescendantMerkleValue
+						},
+						StorageQuery {
+							key: hex_string(b":AA"),
+							query_type: StorageQueryType::ClosestDescendantMerkleValue
+						},
+						// Keys below this comment do not produce a result.
+						// Key that exceed the keyspace of the trie.
+						StorageQuery {
+							key: hex_string(b":AAAAX"),
+							query_type: StorageQueryType::ClosestDescendantMerkleValue
+						},
+						StorageQuery {
+							key: hex_string(b":AAABX"),
+							query_type: StorageQueryType::ClosestDescendantMerkleValue
+						},
+						// Key that are not part of the trie.
+						StorageQuery {
+							key: hex_string(b":AAX"),
+							query_type: StorageQueryType::ClosestDescendantMerkleValue
+						},
+						StorageQuery {
+							key: hex_string(b":AAAX"),
+							query_type: StorageQueryType::ClosestDescendantMerkleValue
+						},
+					]
+				],
+			)
+			.await
+			.unwrap();
+		let operation_id = match response {
+			MethodResponse::Started(started) => started.operation_id,
+			MethodResponse::LimitReached => panic!("Expected started response"),
+		};
 
-	let mut sub = api.subscribe("chainHead_unstable_follow", [true]).await.unwrap();
-	let sub_id = sub.subscription_id();
-	let sub_id = serde_json::to_string(&sub_id).unwrap();
+		let event = get_next_event::<FollowEvent<String>>(&mut sub).await;
+		let merkle_values: HashMap<_, _> = match event {
+			FollowEvent::OperationStorageItems(res) => {
+				assert_eq!(res.operation_id, operation_id);
+
+				res.items
+					.into_iter()
+					.map(|res| {
+						let value = match res.result {
+							StorageResultType::ClosestDescendantMerkleValue(value) => value,
+							_ => panic!("Unexpected StorageResultType"),
+						};
+						(res.key, value)
+					})
+					.collect()
+			},
+			_ => panic!("Expected OperationStorageItems event"),
+		};
+
+		// Finished.
+		assert_matches!(
+				get_next_event::<FollowEvent<String>>(&mut sub).await,
+				FollowEvent::OperationStorageDone(done) if done.operation_id == operation_id
+		);
+
+		// Response for AAAA, AAAB, A and AA.
+		assert_eq!(merkle_values.len(), 4);
+
+		// While checking for expected merkle values to align,
+		// the following will check that the returned keys are
+		// expected.
+
+		// Values for AAAA and AAAB are different.
+		assert_ne!(
+			merkle_values.get(&hex_string(b":AAAA")).unwrap(),
+			merkle_values.get(&hex_string(b":AAAB")).unwrap()
+		);
+
+		// Values for A and AA should be on the same branch node.
+		assert_eq!(
+			merkle_values.get(&hex_string(b":A")).unwrap(),
+			merkle_values.get(&hex_string(b":AA")).unwrap()
+		);
+		// The branch node value must be different than the leaf of either
+		// AAAA and AAAB.
+		assert_ne!(
+			merkle_values.get(&hex_string(b":A")).unwrap(),
+			merkle_values.get(&hex_string(b":AAAA")).unwrap()
+		);
+		assert_ne!(
+			merkle_values.get(&hex_string(b":A")).unwrap(),
+			merkle_values.get(&hex_string(b":AAAB")).unwrap()
+		);
+
+		merkle_values
+	}
 
 	// Import a new block with storage changes.
 	let mut builder = client.new_block(Default::default()).unwrap();
-	builder.push_storage_change(b":a".to_vec(), Some(b"a".to_vec())).unwrap();
-	builder.push_storage_change(b":aa".to_vec(), Some(b"aa".to_vec())).unwrap();
-	builder.push_storage_change(b":aaa".to_vec(), Some(b"aaa".to_vec())).unwrap();
-	builder.push_storage_change(b":ab".to_vec(), Some(b"ab".to_vec())).unwrap();
-	builder.push_storage_change(b":b".to_vec(), Some(b"b".to_vec())).unwrap();
+	builder.push_storage_change(b":AAAA".to_vec(), Some(vec![1; 64])).unwrap();
+	builder.push_storage_change(b":AAAB".to_vec(), Some(vec![2; 64])).unwrap();
 	let block = builder.build().unwrap().block;
 	let block_hash = format!("{:?}", block.header.hash());
 	client.import(BlockOrigin::Own, block.clone()).await.unwrap();
 
 	// Ensure the imported block is propagated and pinned for this subscription.
-	assert_matches!(
-		get_next_event::<FollowEvent<String>>(&mut sub).await,
-		FollowEvent::Initialized(_)
-	);
 	assert_matches!(
 		get_next_event::<FollowEvent<String>>(&mut sub).await,
 		FollowEvent::NewBlock(_)
@@ -2625,87 +2716,40 @@ async fn storage_closest_merkle_value() {
 		FollowEvent::BestBlockChanged(_)
 	);
 
-	// Valid call with storage at the keys.
-	let response: MethodResponse = api
-		.call(
-			"chainHead_unstable_storage",
-			rpc_params![
-				&sub_id,
-				&block_hash,
-				vec![
-					StorageQuery {
-						key: hex_string(b":a"),
-						query_type: StorageQueryType::ClosestDescendantMerkleValue
-					},
-					StorageQuery {
-						key: hex_string(b":aa"),
-						query_type: StorageQueryType::ClosestDescendantMerkleValue
-					},
-					StorageQuery {
-						key: hex_string(b":aaa"),
-						query_type: StorageQueryType::ClosestDescendantMerkleValue
-					},
-					StorageQuery {
-						key: hex_string(b":ab"),
-						query_type: StorageQueryType::ClosestDescendantMerkleValue
-					},
-					StorageQuery {
-						key: hex_string(b":b"),
-						query_type: StorageQueryType::ClosestDescendantMerkleValue
-					},
-					// // Key not existant, the partial key is present however.
-					// StorageQuery {
-					// 	key: hex_string(b":aac"),
-					// 	query_type: StorageQueryType::ClosestDescendantMerkleValue
-					// },
-					// Key not existant, the partial key is present however.
-					StorageQuery {
-						key: hex_string(b":abc"),
-						query_type: StorageQueryType::ClosestDescendantMerkleValue
-					},
-				]
-			],
-		)
-		.await
-		.unwrap();
-	let operation_id = match response {
-		MethodResponse::Started(started) => started.operation_id,
-		MethodResponse::LimitReached => panic!("Expected started response"),
-	};
+	let merkle_values_lhs = expect_merkle_request(&api, &mut sub, sub_id.clone(), block_hash).await;
 
-	let event = get_next_event::<FollowEvent<String>>(&mut sub).await;
-	let merkle_values: HashMap<_, _> = match event {
-		FollowEvent::OperationStorageItems(res) => {
-			assert_eq!(res.operation_id, operation_id);
-			assert_eq!(res.items.len(), 6);
+	// Import a new block with and change AAAB value.
+	let mut builder = client.new_block(Default::default()).unwrap();
+	builder.push_storage_change(b":AAAA".to_vec(), Some(vec![1; 64])).unwrap();
+	builder.push_storage_change(b":AAAB".to_vec(), Some(vec![3; 64])).unwrap();
+	let block = builder.build().unwrap().block;
+	let block_hash = format!("{:?}", block.header.hash());
+	client.import(BlockOrigin::Own, block.clone()).await.unwrap();
 
-			res.items
-				.into_iter()
-				.map(|res| {
-					let value = match res.result {
-						StorageResultType::ClosestDescendantMerkleValue(value) => value,
-						_ => panic!("Unexpected StorageResultType"),
-					};
-					(res.key, value)
-				})
-				.collect()
-		},
-		_ => panic!("Expected OperationStorageItems event"),
-	};
-
-	// Finished.
+	// Ensure the imported block is propagated and pinned for this subscription.
 	assert_matches!(
-			get_next_event::<FollowEvent<String>>(&mut sub).await,
-			FollowEvent::OperationStorageDone(done) if done.operation_id == operation_id
+		get_next_event::<FollowEvent<String>>(&mut sub).await,
+		FollowEvent::NewBlock(_)
+	);
+	assert_matches!(
+		get_next_event::<FollowEvent<String>>(&mut sub).await,
+		FollowEvent::BestBlockChanged(_)
 	);
 
-	// assert_eq!(
-	// 	merkle_values.get(&hex_string(b":aac")).unwrap(),
-	// 	merkle_values.get(&hex_string(b":aa")).unwrap()
-	// );
+	let merkle_values_rhs = expect_merkle_request(&api, &mut sub, sub_id.clone(), block_hash).await;
 
+	// Change propagated to the root.
+	assert_ne!(
+		merkle_values_lhs.get(&hex_string(b":A")).unwrap(),
+		merkle_values_rhs.get(&hex_string(b":A")).unwrap()
+	);
+	assert_ne!(
+		merkle_values_lhs.get(&hex_string(b":AAAB")).unwrap(),
+		merkle_values_rhs.get(&hex_string(b":AAAB")).unwrap()
+	);
+	// However the AAAA branch leaf remains unchenged.
 	assert_eq!(
-		merkle_values.get(&hex_string(b":abc")).unwrap(),
-		merkle_values.get(&hex_string(b":ab")).unwrap()
+		merkle_values_lhs.get(&hex_string(b":AAAA")).unwrap(),
+		merkle_values_rhs.get(&hex_string(b":AAAA")).unwrap()
 	);
 }
