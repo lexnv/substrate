@@ -147,8 +147,14 @@ where
 
 	fn upgrade_inbound(self, mut socket: TSubstream, negotiated_name: Self::Info) -> Self::Future {
 		Box::pin(async move {
-			let handshake_len = unsigned_varint::aio::read_usize(&mut socket).await?;
+			log::info!("InboundUpgrade: name={:?}", negotiated_name);
+
+			let res = unsigned_varint::aio::read_usize(&mut socket).await;
+			log::info!("InboundUpgrade: read_usize={:?} {:?}", res, negotiated_name);
+
+			let handshake_len = res?;
 			if handshake_len > MAX_HANDSHAKE_SIZE {
+				log::info!("InboundUpgrade: TooLarge");
 				return Err(NotificationsHandshakeError::TooLarge {
 					requested: handshake_len,
 					max: MAX_HANDSHAKE_SIZE,
@@ -157,12 +163,18 @@ where
 
 			let mut handshake = vec![0u8; handshake_len];
 			if !handshake.is_empty() {
-				socket.read_exact(&mut handshake).await?;
+				log::info!("InboundUpgrade: read_exact {:?}", negotiated_name);
+				let res = socket.read_exact(&mut handshake).await;
+				log::info!("InboundUpgrade: read_exact res={:?} {:?}", res, negotiated_name);
+				res?;
 			}
+
+			log::info!("InboundUpgrade: handshake recv {:?} {:?}", handshake, negotiated_name);
 
 			let mut codec = UviBytes::default();
 			codec.set_max_len(usize::try_from(self.max_notification_size).unwrap_or(usize::MAX));
 
+			log::info!("NotificationsInSubstreams created");
 			let substream = NotificationsInSubstream {
 				socket: Framed::new(socket, codec),
 				handshake: NotificationsInSubstreamHandshake::NotSent,
@@ -225,12 +237,26 @@ where
 		loop {
 			match mem::replace(this.handshake, NotificationsInSubstreamHandshake::Sent) {
 				NotificationsInSubstreamHandshake::PendingSend(msg) => {
+					log::info!("NotificationsInSubstreamHandshake::PendingSend() {:?}", msg);
+
 					match Sink::poll_ready(this.socket.as_mut(), cx) {
 						Poll::Ready(_) => {
 							*this.handshake = NotificationsInSubstreamHandshake::Flush;
+							log::info!(
+								"NotificationsInSubstreamHandshake::PendingSend() poll_ready",
+							);
 							match Sink::start_send(this.socket.as_mut(), io::Cursor::new(msg)) {
-								Ok(()) => {},
-								Err(err) => return Poll::Ready(Err(err)),
+								Ok(()) => {
+									log::info!(
+										"NotificationsInSubstreamHandshake::PendingSend() start_send OK",
+									);
+								},
+								Err(err) => {
+									log::info!(
+										"NotificationsInSubstreamHandshake::PendingSend() start_send Err {:?}", err
+									);
+									return Poll::Ready(Err(err))
+								},
 							}
 						},
 						Poll::Pending => {
@@ -240,9 +266,14 @@ where
 					}
 				},
 				NotificationsInSubstreamHandshake::Flush => {
+					log::info!("NotificationsInSubstreamHandshake::Flush()",);
 					match Sink::poll_flush(this.socket.as_mut(), cx)? {
-						Poll::Ready(()) =>
-							*this.handshake = NotificationsInSubstreamHandshake::Sent,
+						Poll::Ready(()) => {
+							*this.handshake = NotificationsInSubstreamHandshake::Sent;
+							log::info!(
+								"NotificationsInSubstreamHandshake::Flush() poll_flush ready",
+							);
+						},
 						Poll::Pending => {
 							*this.handshake = NotificationsInSubstreamHandshake::Flush;
 							return Poll::Pending
@@ -279,12 +310,26 @@ where
 					return Poll::Pending
 				},
 				NotificationsInSubstreamHandshake::PendingSend(msg) => {
+					log::info!("NotificationsInSubstreamHandshake::PendingSend() {:?}", msg);
 					match Sink::poll_ready(this.socket.as_mut(), cx) {
 						Poll::Ready(_) => {
+							log::info!(
+								"NotificationsInSubstreamHandshake:: PendingSend Ready poll_ready ",
+							);
+
 							*this.handshake = NotificationsInSubstreamHandshake::Flush;
 							match Sink::start_send(this.socket.as_mut(), io::Cursor::new(msg)) {
-								Ok(()) => {},
-								Err(err) => return Poll::Ready(Some(Err(err))),
+								Ok(()) => {
+									log::info!(
+										"NotificationsInSubstreamHandshake::PendingSend() start_send OK",
+									);
+								},
+								Err(err) => {
+									log::info!(
+										"NotificationsInSubstreamHandshake::PendingSend() start_send Err {:?}", err
+									);
+									return Poll::Ready(Some(Err(err)))
+								},
 							}
 						},
 						Poll::Pending => {
@@ -295,9 +340,13 @@ where
 				},
 				NotificationsInSubstreamHandshake::Flush => {
 					match Sink::poll_flush(this.socket.as_mut(), cx)? {
-						Poll::Ready(()) =>
-							*this.handshake = NotificationsInSubstreamHandshake::Sent,
+						Poll::Ready(()) => {
+							log::info!("NotificationsInSubstreamHandshake::Flush() ready");
+							*this.handshake = NotificationsInSubstreamHandshake::Sent;
+						},
 						Poll::Pending => {
+							log::info!("NotificationsInSubstreamHandshake::Flush() Pending");
+
 							*this.handshake = NotificationsInSubstreamHandshake::Flush;
 							return Poll::Pending
 						},
@@ -306,14 +355,24 @@ where
 
 				NotificationsInSubstreamHandshake::Sent => {
 					match Stream::poll_next(this.socket.as_mut(), cx) {
-						Poll::Ready(None) =>
+						Poll::Ready(None) => {
+							log::info!(
+								"NotificationsInSubstreamHandshake::Sent  poll_next() Poll::Ready(None) => ClosingInResponseToRemote"
+							);
 							*this.handshake =
-								NotificationsInSubstreamHandshake::ClosingInResponseToRemote,
+								NotificationsInSubstreamHandshake::ClosingInResponseToRemote;
+						},
 						Poll::Ready(Some(msg)) => {
+							log::info!(
+								"NotificationsInSubstreamHandshake:: Sent poll_next() Poll::Ready(MSG) = {:?}", msg
+							);
 							*this.handshake = NotificationsInSubstreamHandshake::Sent;
 							return Poll::Ready(Some(msg))
 						},
 						Poll::Pending => {
+							// log::info!(
+							// 	"NotificationsInSubstreamHandshake:: Sent poll_next()Pending"
+							// );
 							*this.handshake = NotificationsInSubstreamHandshake::Sent;
 							return Poll::Pending
 						},
@@ -322,8 +381,13 @@ where
 
 				NotificationsInSubstreamHandshake::ClosingInResponseToRemote =>
 					match Sink::poll_close(this.socket.as_mut(), cx)? {
-						Poll::Ready(()) =>
-							*this.handshake = NotificationsInSubstreamHandshake::BothSidesClosed,
+						Poll::Ready(()) => {
+							log::info!(
+								"NotificationsInSubstreamHandshake:: ClosingInResponseToRemote  poll_close Ready"
+							);
+
+							*this.handshake = NotificationsInSubstreamHandshake::BothSidesClosed;
+						},
 						Poll::Pending => {
 							*this.handshake =
 								NotificationsInSubstreamHandshake::ClosingInResponseToRemote;
@@ -376,11 +440,23 @@ where
 
 	fn upgrade_outbound(self, mut socket: TSubstream, negotiated_name: Self::Info) -> Self::Future {
 		Box::pin(async move {
-			upgrade::write_length_prefixed(&mut socket, &self.initial_message).await?;
+			log::info!(
+				"OutboundUpgrade: name={:?} message={:?}",
+				negotiated_name,
+				self.initial_message
+			);
+
+			let res = upgrade::write_length_prefixed(&mut socket, &self.initial_message).await;
+			log::info!("OutboundUpgrade: Writing handshake res={:?} {:?}", res, negotiated_name);
+			res?;
 
 			// Reading handshake.
-			let handshake_len = unsigned_varint::aio::read_usize(&mut socket).await?;
+			let res = unsigned_varint::aio::read_usize(&mut socket).await;
+			log::info!("OutboundUpgrade:  handshake len res={:?} {:?}", res, negotiated_name);
+			let handshake_len = res?;
+
 			if handshake_len > MAX_HANDSHAKE_SIZE {
+				log::info!("OutboundUpgrade: Handshake bigger than max");
 				return Err(NotificationsHandshakeError::TooLarge {
 					requested: handshake_len,
 					max: MAX_HANDSHAKE_SIZE,
@@ -389,7 +465,14 @@ where
 
 			let mut handshake = vec![0u8; handshake_len];
 			if !handshake.is_empty() {
-				socket.read_exact(&mut handshake).await?;
+				log::info!("OutboundUpgrade: Handshake read_exact {:?}", negotiated_name);
+				let res = socket.read_exact(&mut handshake).await;
+				log::info!(
+					"OutboundUpgrade: Handshake read_exact res={:?} {:?}",
+					res,
+					negotiated_name
+				);
+				res?;
 			}
 
 			let mut codec = UviBytes::default();

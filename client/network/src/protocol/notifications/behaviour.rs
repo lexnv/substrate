@@ -1079,6 +1079,12 @@ impl NetworkBehaviour for Notifications {
 							trace!(target: "sub-libp2p",
 								"Libp2p => Connected({}, {:?}, {:?}, {:?}): Not requested by PSM, disabling.",
 								peer_id, set_id, endpoint, connection_id);
+							let protos: Vec<_> = self
+								.notif_protocols
+								.iter()
+								.map(|proto| proto.name.clone())
+								.collect();
+							trace!(target: "sub-libp2p", "Set ID {:?} to protocol {:?}", set_id, protos);
 
 							let mut connections = SmallVec::new();
 							connections.push((connection_id, ConnectionState::Closed));

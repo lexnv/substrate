@@ -503,6 +503,7 @@ impl ConnectionHandler for NotifsHandler {
 
 						// Create `handshake_message` on a separate line to be sure that the
 						// lock is released as soon as possible.
+						log::info!("Notificatios::on_connection_event::ConnectionEvent::FullyNegotiatedInbound  State::Open send_handshake");
 						let handshake_message = protocol_info.config.handshake.read().clone();
 						in_substream_open.substream.send_handshake(handshake_message);
 						*in_substream = Some(in_substream_open.substream);
@@ -624,6 +625,8 @@ impl ConnectionHandler for NotifsHandler {
 								},
 							);
 						}
+
+						log::info!("Notificatios::on_behaviour_event::NotifsHandlerIn::Open  State::OpenDesiredByRemote send_handshake");
 
 						in_substream.send_handshake(handshake_message);
 
